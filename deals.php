@@ -187,6 +187,8 @@ if (isset($_GET['edit'])) {
 include 'includes/header.php';
 include 'includes/sidebar.php';
 ?>
+<!-- Global CSRF Token for AJAX -->
+<input type="hidden" id="global-csrf-token" value="<?php echo csrfToken(); ?>">
 
 <?php if ($action === 'new' || $editDeal): ?>
 <!-- Deal Form -->
@@ -390,10 +392,10 @@ function drop(ev, stageId) {
     formData.append('deal_id', dealId);
     formData.append('stage_id', stageId);
     
-    // Get CSRF token
-    const csrfInput = document.querySelector('input[name="csrf_token"]');
-    if (csrfInput) {
-        formData.append('csrf_token', csrfInput.value);
+    // Get CSRF token from global input
+    const csrfToken = document.getElementById('global-csrf-token');
+    if (csrfToken) {
+        formData.append('csrf_token', csrfToken.value);
     }
 
     fetch('deals.php', {
