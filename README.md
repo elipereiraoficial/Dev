@@ -9,179 +9,218 @@
 
 ---
 
-## 📌 Visão Geral
+## 📌 Overview
 
-**Luxury CRM** é um sistema de gestão de relacionamento com clientes (CRM) moderno e completo, desenvolvido especificamente para o segmento de imóveis de luxo. O sistema permite gerenciar clientes, imóveis, negócios pipeline e tarefas de forma eficiente e intuitiva.
+**Luxury CRM** is a modern and complete customer relationship management (CRM) system, specifically developed for the luxury real estate segment. The system allows you to manage clients, properties, business pipelines, and tasks efficiently and intuitively.
 
-Este projeto foi desenvolvido com foco em usabilidade, performance e design premium, utilizando PHP moderno e banco de dados PostgreSQL.
+This project was developed with a focus on usability, performance, and premium design, using modern PHP and PostgreSQL database.
 
 ---
 
-## ✨ Funcionalidades Principais
+## ✨ Key Features
 
 ### 📊 Dashboard
-- **KPIs Dinâmicos**: Visualização em tempo real de negócios ativos, fechados ganho, valor do pipeline e imóveis disponíveis
-- **Pipeline Kanban Mini**: Visão geral do pipeline diretamente no dashboard
-- **Navegação Inteligente**: Clique nos cartões para acessar as respectivas páginas
-- **Histórico de Atividades**: Feed automático de últimas ações no sistema
+- **Dynamic KPIs**: Real-time view of active deals, closed won, pipeline value, and available properties
+- **Mini Kanban Pipeline**: Overview of the pipeline directly on the dashboard
+- **Smart Navigation**: Click on cards to access respective pages
+- **Activity Feed**: Automatic feed of recent actions in the system
 
-### 💼 Pipeline Kanban (Negócios)
-- **Drag & Drop**: Arraste e solte cartões entre as etapas do pipeline
-- **8 Etapas do Pipeline**:
-  - Novo Lead → Contacto Inicial → Visita Agendada → Em Negociação → Proposta Submetida → Contrato → Fechado Ganho/Fechado Perdido
-- **Associação Automática**: Ao selecionar um imóvel, o valor do negócio é preenchido automaticamente
-- **Imóvel Externo**: Possibilidade de criar imóveis de outras agências
-- **Restrição Inteligente**: Imóvel em Proposta Submetida não pode ter outro negócio ativo simultaneamente
+### 💼 Kanban Pipeline (Deals)
+- **Drag & Drop**: Drag and drop cards between pipeline stages
+- **8 Pipeline Stages**:
+  - New Lead → Initial Contact → Scheduled Visit → In Negotiation → Proposal Submitted → Contract → Closed Won/Lost
+- **Automatic Association**: When selecting a property, the deal value is automatically filled
+- **External Properties**: Possibility to create properties from other agencies
+- **Smart Restriction**: Property in "Proposal Submitted" stage cannot have another active deal simultaneously
 
-### 👥 Gestão de Clientes
-- Cadastro completo de clientes (compradores/vendedores/investidores)
-- Controle de orçamento mínimo e máximo
-- Histórico de preferências e notas
-- Status ativo/inativo
+### 👥 Client Management
+- Complete client registration (buyers/sellers/investors)
+- Minimum and maximum budget control
+- Preferences and notes history
+- Active/inactive status
 
-### 🏡 Gestão de Imóveis
-- Multiple tipos de imóvel: Apartamento, Moradia, Vivenda, Terreno, Comercial
-- Estados: Disponível, Reservado, Vendido, Arrendado, Indisponível
-- Galeria de imagens e documentos
-- Featured (destaque)
-- Imóveis externos (de outras agências)
+### 🏡 Property Management
+- Multiple property types: Apartment, House, Villa, Land, Commercial
+- Status: Available, Reserved, Sold, Rented, Unavailable
+- Image and document gallery
+- Featured properties
+- External properties (from other agencies)
 
-### ✅ Gestão de Tarefas
-- Prioridades: Urgente, Alta, Média, Baixa
-- Status: Pendente, Em Andamento, Concluído
-- Datas limite e notificações
-- Associação com clientes e imóveis
+### ✅ Task Management
+- Priorities: Urgent, High, Medium, Low
+- Status: Pending, In Progress, Completed
+- Deadline dates and notifications
+- Association with clients and properties
 
-### 📅 Calendário
-- Visualização mensal com eventos
-- Tarefas e prazos de negócios integrados
-- Lista de próximos eventos
+### 📅 Calendar
+- Monthly view with events
+- Tasks and deal deadlines integrated
+- List of upcoming events
 
-### 📈 Sistema de Relatórios
-- Contadores em tempo real
-- Pipeline value automático
-- Fechados por mês
+### 📈 Reporting System
+- Real-time counters
+- Automatic pipeline value
+- Closed deals per month
 
 ---
 
-## 🛠️ Tecnologias Utilizadas
+## 🛠️ Technologies Used
 
-| Categoria | Tecnologia |
+| Category | Technology |
 |-----------|------------|
 | **Backend** | PHP 8.2 |
 | **Database** | PostgreSQL (Supabase) |
 | **Frontend** | HTML5, Tailwind CSS |
-| **Servidor** | XAMPP (Apache) |
-| **Autenticação** | Session-based com CSRF Protection |
+| **Server** | XAMPP (Apache) |
+| **Authentication** | Session-based with CSRF Protection |
 
 ---
 
-## 📋 Estrutura do Banco de Dados
+## 📋 Database Structure
 
 ```
-users          → Utilizadores do sistema
-clients        → Clientes (compradores/vendedores)
-properties     → Imóveis
-deal_stages    → Etapas do pipeline
-deals          → Negócios/oportunidades
-tasks          → Tarefas
-activities     → Histórico de atividades
-media          → Anexos de imóveis
+users          → System users
+clients        → Clients (buyers/sellers)
+properties     → Properties
+deal_stages    → Pipeline stages
+deals          → Business opportunities
+tasks          → Tasks
+activities     → Activity history
+media          → Property attachments
 ```
 
 ---
 
-## 🚀 Instalação e Configuração
+## 🚀 Installation & Setup
 
-### Pré-requisitos
-- PHP 8.2 ou superior
-- XAMPP ou similar (Apache)
-- Extensões PHP: pdo_pgsql, pgsql
-- Conta no Supabase ( PostgreSQL )
+### Prerequisites
+- PHP 8.2 or higher
+- XAMPP or similar (Apache)
+- PHP extensions: pdo_pgsql, pgsql
+- Supabase account (PostgreSQL)
 
-### Passos de Instalação
+### Installation Steps
 
-1. **Clone o repositório**
+1. **Clone the repository**
    ```bash
    git clone https://github.com/elipereiraoficial/Dev.git
    ```
 
-2. **Configure o banco de dados**
-   - Crie uma conta no [Supabase](https://supabase.com)
-   - Crie um novo projeto
-   - Execute o script `setup.php` para criar as tabelas
+2. **Configure the database**
+   - Create an account at [Supabase](https://supabase.com)
+   - Create a new project
+   - Run the `setup.php` script to create tables
 
-3. **Configure o arquivo config.php**
+3. **Configure config.php**
    ```php
-   define('DB_HOST', 'seu-host-supabase');
+   define('DB_HOST', 'your-supabase-host');
    define('DB_PORT', '5432');
    define('DB_NAME', 'postgres');
    define('DB_USER', 'postgres');
-   define('DB_PASS', 'sua-senha');
+   define('DB_PASS', 'your-password');
    ```
 
-4. **Inicie o servidor**
-   - Inicie o Apache no XAMPP
-   - Acesse: `http://localhost/luxury-crm/`
+4. **Start the server**
+   - Start Apache in XAMPP
+   - Access: `http://localhost/luxury-crm/`
 
-### Credenciais Padrão
+### Default Credentials
 - **Email**: admin@luxury.pt
-- **Senha**: admin123
+- **Password**: admin123
 
 ---
 
-## 🎨 Design e UI/UX
+## 🎨 Design & UI/UX
 
-O sistema foi desenvolvido com um design premium e elegante:
+The system was developed with a premium and elegant design:
 
-- **Paleta de Cores**: Dourado (#d4af37) como cor principal, com tons de cinza e azul
-- **Tipografia**: Fontes modernas e legíveis
-- **Componentes**: Cards com hover effects, transições suaves
-- **Responsividade**: Totalmente responsivo para desktop e mobile
+- **Color Palette**: Golden (#d4af37) as the main color, with gray and blue tones
+- **Typography**: Modern and readable fonts
+- **Components**: Cards with hover effects, smooth transitions
+- **Responsiveness**: Fully responsive for desktop and mobile
+
+---
+
+## 🔒 Security
+
+- ✅ CSRF protection on all forms
+- ✅ Passwords hashed with `password_hash()`
+- ✅ Secure sessions with custom name
+- ✅ Input sanitization against XSS
+- ✅ Prepared statements against SQL Injection
 
 ---
 
 ## 📱 Screenshots
 
-O sistema inclui:
-- Dashboard com KPIs interativos
-- Pipeline Kanban visual
-- Calendário mensal
-- Listas filtráveis
-- Formulários de edição completa
+The system includes:
+- Dashboard with interactive KPIs
+- Visual Kanban Pipeline
+- Monthly Calendar
+- Filterable Lists
+- Complete Edit Forms
 
 ---
 
-## 🔒 Segurança
+## 📄 License
 
-- ✅ Proteção CSRF em todos os formulários
-- ✅ Passwords hasheadas com `password_hash()`
-- ✅ Sessões seguras com nome customizado
-- ✅ Limpeza de inputs contra XSS
-- ✅ Prepared statements contra SQL Injection
+This project is licensed under the MIT license.
 
 ---
 
-## 📄 Licença
+## 🏆 Project Highlights
 
-Este projeto está licenciado sob a licença MIT.
+- 🎯 **Complete CRM Solution** - All-in-one system for luxury real estate management
+- 💎 **Premium Design** - Elegant UI specifically designed for high-end clients
+- ⚡ **Modern Tech Stack** - Built with PHP 8.2 and modern best practices
+- 🔄 **Real-time Updates** - Dashboard and pipeline update automatically
+- 🛡️ **Enterprise Security** - Production-ready security features
+- 📱 **Fully Responsive** - Works on desktop, tablet, and mobile
+- 🌐 **Multi-language Ready** - Portuguese interface, easy to translate
 
 ---
 
-## 👨‍💻 Autor
+## 💡 Future Enhancements
+
+Potential features for future versions:
+- Email notifications and reminders
+- WhatsApp integration
+- PDF report generation
+- Property website export
+- Client portal
+- Commission tracking
+- Multi-agent support with permissions
+
+---
+
+## 👨‍💻 Author
 
 **Eli Pereira**
 - GitHub: [@elipereiraoficial](https://github.com/elipereiraoficial)
-- Email: eli@luxurycrm.com
+- Email: contato@elipereira.com
 
 ---
 
-## 🙏 Agradecimentos
+## 🙏 Acknowledgments
 
-Agradecimento especial ao OpenCode AI pela assistência no desenvolvimento deste projeto.
+Special thanks to OpenCode AI for assistance in developing this project.
 
 ---
 
 <p align="center">
-  <sub>Desenvolvido com ❤️ e ☕</sub>
+  <sub>Developed with ❤️ and ☕</sub>
+</p>
+
+---
+
+<p align="center">
+  <a href="https://github.com/elipereiraoficial/Dev">
+    <img src="https://img.shields.io/github/stars/elipereiraoficial/Dev?style=social" alt="Stars">
+  </a>
+  <a href="https://github.com/elipereiraoficial/Dev">
+    <img src="https://img.shields.io/github/forks/elipereiraoficial/Dev?style=social" alt="Forks">
+  </a>
+  <a href="https://github.com/elipereiraoficial/Dev">
+    <img src="https://img.shields.io/github/watchers/elipereiraoficial/Dev?style=social" alt="Watchers">
+  </a>
 </p>
