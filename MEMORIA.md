@@ -127,6 +127,34 @@
 
 ---
 
+## 🔒 Security Enhancements (02/05/2026)
+
+### Session Security (config.php)
+- [x] Secure session cookies (httponly, secure, samesite)
+- [x] Session strict mode enabled
+- [x] Session ID regeneration on login
+- [x] Session timeout (30 min inactivity)
+- [x] Session ID rotation every 5 min
+
+### Security Headers (config.php)
+- [x] X-Content-Type-Options: nosniff
+- [x] X-Frame-Options: SAMEORIGIN
+- [x] X-XSS-Protection
+- [x] Referrer-Policy
+- [x] Content-Security-Policy (CSP)
+
+### Login Protection (auth.php)
+- [x] Rate limiting: 5 tentativas em 15 min
+- [x] Session fixation prevention (regenerate_id on login)
+- [x] Failed attempt tracking by IP+email
+- [x] Session timeout after inactivity
+
+### Error Handling (config.php)
+- [x] Removed detailed DB error messages in production
+- [x] Errors logged to server log instead of display
+
+---
+
 ## 🧹 Code Cleanup (02/05/2026)
 
 **Arquivos Eliminados (debug/temporários):**

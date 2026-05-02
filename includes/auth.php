@@ -8,6 +8,12 @@ function requireAuth() {
         header('Location: login.php');
         exit;
     }
+    
+    // Check for session timeout (30 minutes)
+    if (isset($_SESSION['_last_activity']) && (time() - $_SESSION['_last_activity'] > 1800)) {
+        logout();
+    }
+    $_SESSION['_last_activity'] = time();
 }
 
 // Check admin role
@@ -29,23 +35,84 @@ function currentUser() {
     return $stmt->fetch();
 }
 
+// Check rate limiting
+function checkLoginRateLimit($email) {
+    $ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+    $key = 'login_attempts_' . md5($email . $ip);
+    
+    if (!isset($_SESSION[$key])) {
+        $_SESSION[$key] = ['attempts' => 0, 'first_attempt' => time()];
+    }
+    
+    $attempt = $_SESSION[$key];
+    $window = defined('LOGIN_ATTEMPTS_WINDOW') ? LOGIN_ATTEMPTS_WINDOW : 900;
+    $max = defined('LOGIN_ATTEMPTS_MAX') ? LOGIN_ATTEMPTS_MAX : 5;
+    
+    // Reset if window expired
+    if (time() - $attempt['first_attempt'] > $window) {
+        $_SESSION[$key] = ['attempts' => 0, 'first_attempt' => time()];
+        return true;
+    }
+    
+    // Check limit
+    if ($attempt['attempts'] >= $max) {
+        $remaining = $window - (time() - $attempt['first_attempt']);
+        if ($remaining > 0) {
+            return ['locked' => true, 'remaining' => $remaining];
+        }
+    }
+    
+    return true;
+}
+
+function recordLoginAttempt($email) {
+    $ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+    $key = 'login_attempts_' . md5($email . $ip);
+    
+    if (!isset($_SESSION[$key])) {
+        $_SESSION[$key] = ['attempts' => 0, 'first_attempt' => time()];
+    }
+    $_SESSION[$key]['attempts']++;
+}
+
 // Login user
 function login($email, $password) {
     global $pdo;
+    
+    // Check rate limit first
+    $rateCheck = checkLoginRateLimit($email);
+    if (isset($rateCheck['locked'])) {
+        setFlash('error', 'Demasiadas tentativas. Tente novamente em ' . ceil($rateCheck['remaining']/60) . ' minutos.');
+        return 'rate_limited';
+    }
+    
     $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ? AND active = 1");
     $stmt->execute([$email]);
     $user = $stmt->fetch();
 
     if ($user && password_verify($password, $user['password'])) {
+        // Regenerate session ID to prevent session fixation
+        session_regenerate_id(true);
+        
         $_SESSION['user_id'] = $user['id'];
         $_SESSION['user_name'] = $user['name'];
         $_SESSION['user_role'] = $user['role'];
         $_SESSION['user_email'] = $user['email'];
+        $_SESSION['_last_activity'] = time();
+        $_SESSION['_login_time'] = time();
+        
+        // Clear failed attempt counter
+        $ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+        $key = 'login_attempts_' . md5($email . $ip);
+        unset($_SESSION[$key]);
         
         seedTestDataIfNeeded();
         
         return true;
     }
+    
+    // Record failed attempt
+    recordLoginAttempt($email);
     return false;
 }
 
@@ -122,6 +189,15 @@ function seedTestDataIfNeeded() {
 
 // Logout
 function logout() {
+    // Clear session data
+    $_SESSION = [];
+    
+    // Delete session cookie
+    $params = session_get_cookie_params();
+    setcookie(session_name(), '', time() - 3600, 
+        $params['path'], $params['domain'], 
+        $params['secure'], $params['httponly']);
+    
     session_destroy();
     header('Location: login.php');
     exit;

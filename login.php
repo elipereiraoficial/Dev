@@ -13,10 +13,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = clean($_POST['email'] ?? '');
     $password = $_POST['password'] ?? '';
 
-    if (login($email, $password)) {
+    $loginResult = login($email, $password);
+    
+    if ($loginResult === true) {
         setFlash('success', 'Bem-vindo de volta!');
         header('Location: index.php');
         exit;
+    } elseif ($loginResult === 'rate_limited') {
+        $error = getFlash()['message'] ?? 'Demasiadas tentativas. Tente novamente mais tarde.';
     } else {
         $error = 'Email ou palavra-passe inválidos.';
     }
