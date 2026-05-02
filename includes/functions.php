@@ -36,6 +36,42 @@ function clean($data) {
     return htmlspecialchars(strip_tags(trim($data)), ENT_QUOTES, 'UTF-8');
 }
 
+// Validate email
+function isValidEmail($email) {
+    return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
+}
+
+// Validate phone (Portuguese format)
+function isValidPhone($phone) {
+    $clean = preg_replace('/[^0-9]/', '', $phone);
+    return strlen($clean) >= 9 && strlen($clean) <= 15;
+}
+
+// Sanitize filename
+function sanitizeFilename($filename) {
+    $filename = preg_replace('/[^a-zA-Z0-9_-]/', '', $filename);
+    $filename = substr($filename, 0, 255);
+    return $filename ?: 'file';
+}
+
+// Security logging
+function securityLog($event, $details = []) {
+    $ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+    $userId = $_SESSION['user_id'] ?? 'guest';
+    $email = $_SESSION['user_email'] ?? 'unknown';
+    
+    $log = [
+        'time' => date('Y-m-d H:i:s'),
+        'event' => $event,
+        'ip' => $ip,
+        'user_id' => $userId,
+        'email' => $email,
+        'details' => $details
+    ];
+    
+    error_log("[SECURITY] " . json_encode($log));
+}
+
 // Flash messages
 function setFlash($type, $message) {
     $_SESSION['flash'] = ['type' => $type, 'message' => $message];
@@ -58,9 +94,19 @@ function logActivity($type, $description, $related_to = null, $related_id = null
     $stmt->execute([$type, $description, $related_to, $related_id, $user_id]);
 }
 
-// Get count for dashboard
+// Whitelist of allowed tables for getCount
 function getCount($table, $where = '', $params = []) {
     global $pdo;
+    
+    // Whitelist allowed tables to prevent SQL injection
+    $allowedTables = ['users', 'clients', 'properties', 'deals', 'tasks', 'activities', 'deal_stages'];
+    $table = strtolower(trim($table));
+    
+    if (!in_array($table, $allowedTables)) {
+        error_log("Security: Invalid table in getCount: $table");
+        return 0;
+    }
+    
     $sql = "SELECT COUNT(*) FROM {$table}";
     if ($where) $sql .= " WHERE {$where}";
     $stmt = $pdo->prepare($sql);

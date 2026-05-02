@@ -113,6 +113,11 @@ function login($email, $password) {
     
     // Record failed attempt
     recordLoginAttempt($email);
+    
+    // Log failed login attempt
+    $ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+    error_log("[SECURITY] Failed login attempt for email: $email from IP: $ip");
+    
     return false;
 }
 

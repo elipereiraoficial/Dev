@@ -43,8 +43,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['change_password'])) {
             $error = 'Todos os campos de palavra-passe são obrigatórios.';
         } elseif ($new !== $confirm) {
             $error = 'As palavras-passe não coincidem.';
-        } elseif (strlen($new) < 6) {
-            $error = 'A palavra-passe deve ter pelo menos 6 caracteres.';
+        } elseif (strlen($new) < 8) {
+            $error = 'A palavra-passe deve ter pelo menos 8 caracteres.';
+        } elseif (!preg_match('/[A-Z]/', $new)) {
+            $error = 'A palavra-passe deve ter pelo menos uma maiúscula.';
+        } elseif (!preg_match('/[0-9]/', $new)) {
+            $error = 'A palavra-passe deve ter pelo menos um número.';
         } else {
             $stmt = $pdo->prepare("SELECT password FROM users WHERE id = ?");
             $stmt->execute([$_SESSION['user_id']]);
@@ -54,8 +58,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['change_password'])) {
                 $error = 'Palavra-passe atual incorreta.';
             } else {
                 $hash = password_hash($new, PASSWORD_DEFAULT);
-                $stmt = $pdo->prepare("UPDATE users SET password = ? WHERE id = ?");
+                $stmt = $pdo->prepare("UPDATE users SET password = ?, updated_at = NOW() WHERE id = ?");
                 $stmt->execute([$hash, $_SESSION['user_id']]);
+                error_log("[SECURITY] Password changed for user ID: " . $_SESSION['user_id']);
                 $message = 'Palavra-passe alterada com sucesso.';
             }
         }

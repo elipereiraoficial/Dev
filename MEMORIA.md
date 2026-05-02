@@ -148,6 +148,19 @@
 - [x] Session fixation prevention (regenerate_id on login)
 - [x] Failed attempt tracking by IP+email
 - [x] Session timeout after inactivity
+- [x] Security logging for failed logins
+
+### Input Validation (functions.php)
+- [x] SQL injection prevention in getCount() (whitelist tables)
+- [x] Added validateEmail(), validatePhone() helpers
+- [x] Added sanitizeFilename() for future uploads
+- [x] Added securityLog() for audit trail
+
+### Password Security (settings.php)
+- [x] Minimum 8 characters required
+- [x] Must contain uppercase letter
+- [x] Must contain number
+- [x] Security logging on password change
 
 ### Error Handling (config.php)
 - [x] Removed detailed DB error messages in production
