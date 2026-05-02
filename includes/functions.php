@@ -132,3 +132,68 @@ function getStages() {
 function countDealsByStage($stage_id) {
     return getValue("SELECT COUNT(*) FROM deals WHERE stage_id = ? AND status = 'open'", [$stage_id]);
 }
+
+// Audit Trail Functions
+function logAudit($action, $table_name = null, $record_id = null, $old_values = null, $new_values = null) {
+    global $pdo;
+    
+    $user_id = $_SESSION['user_id'] ?? null;
+    $ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+    $user_agent = $_SERVER['HTTP_USER_AGENT'] ?? 'unknown';
+    
+    $old_json = $old_values ? json_encode($old_values) : null;
+    $new_json = $new_values ? json_encode($new_values) : null;
+    
+    try {
+        $stmt = $pdo->prepare("INSERT INTO audit_log (user_id, action, table_name, record_id, old_values, new_values, ip_address, user_agent) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt->execute([$user_id, $action, $table_name, $record_id, $old_json, $new_json, $ip, $user_agent]);
+    } catch (Exception $e) {
+        error_log("Audit log error: " . $e->getMessage());
+    }
+}
+
+// Audit helpers for common actions
+function auditCreate($table, $record_id, $data) {
+    logAudit('create', $table, $record_id, null, $data);
+}
+
+function auditUpdate($table, $record_id, $old_data, $new_data) {
+    logAudit('update', $table, $record_id, $old_data, $new_data);
+}
+
+function auditDelete($table, $record_id, $data) {
+    logAudit('delete', $table, $record_id, $data, null);
+}
+
+function auditLogin($success = true) {
+    $action = $success ? 'login_success' : 'login_failed';
+    logAudit($action, 'users', $_SESSION['user_id'] ?? null);
+}
+
+// Get audit log for admin
+function getAuditLog($limit = 50, $user_id = null, $action = null) {
+    global $pdo;
+    
+    $sql = "SELECT al.*, u.name as user_name, u.email as user_email 
+            FROM audit_log al 
+            LEFT JOIN users u ON al.user_id = u.id 
+            WHERE 1=1";
+    $params = [];
+    
+    if ($user_id) {
+        $sql .= " AND al.user_id = ?";
+        $params[] = $user_id;
+    }
+    
+    if ($action) {
+        $sql .= " AND al.action = ?";
+        $params[] = $action;
+    }
+    
+    $sql .= " ORDER BY al.created_at DESC LIMIT ?";
+    $params[] = $limit;
+    
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute($params);
+    return $stmt->fetchAll();
+}

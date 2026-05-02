@@ -106,6 +106,9 @@ function login($email, $password) {
         $key = 'login_attempts_' . md5($email . $ip);
         unset($_SESSION[$key]);
         
+        // Audit login success
+        auditLogin(true);
+        
         seedTestDataIfNeeded();
         
         return true;
@@ -113,6 +116,9 @@ function login($email, $password) {
     
     // Record failed attempt
     recordLoginAttempt($email);
+    
+    // Audit login failed
+    auditLogin(false);
     
     // Log failed login attempt
     $ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
@@ -206,4 +212,73 @@ function logout() {
     session_destroy();
     header('Location: login.php');
     exit;
+}
+
+// Two-Factor Authentication Functions
+function generateTwoFactorCode() {
+    return str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+}
+
+function sendTwoFactorCode($email) {
+    global $pdo;
+    
+    $code = generateTwoFactorCode();
+    $expires = date('Y-m-d H:i:s', strtotime('+5 minutes'));
+    
+    // Store code temporarily (in session, not database for security)
+    $_SESSION['2fa_pending'] = [
+        'code' => $code,
+        'email' => $email,
+        'expires' => strtotime($expires)
+    ];
+    
+    // In production, send via email/SMS
+    // For now, we'll show it in development
+    error_log("[2FA] Code for $email: $code");
+    
+    return $code;
+}
+
+function verifyTwoFactorCode($code) {
+    if (!isset($_SESSION['2fa_pending'])) {
+        return false;
+    }
+    
+    $pending = $_SESSION['2fa_pending'];
+    
+    // Check expiration
+    if (time() > $pending['expires']) {
+        unset($_SESSION['2fa_pending']);
+        return false;
+    }
+    
+    // Verify code
+    if ($code === $pending['code']) {
+        unset($_SESSION['2fa_pending']);
+        return true;
+    }
+    
+    return false;
+}
+
+function isTwoFactorEnabled($user_id) {
+    global $pdo;
+    $stmt = $pdo->prepare("SELECT two_factor_enabled FROM users WHERE id = ?");
+    $stmt->execute([$user_id]);
+    $result = $stmt->fetch();
+    return $result && $result['two_factor_enabled'] == 1;
+}
+
+function enableTwoFactor($user_id) {
+    global $pdo;
+    $stmt = $pdo->prepare("UPDATE users SET two_factor_enabled = 1 WHERE id = ?");
+    $stmt->execute([$user_id]);
+    logAudit('2fa_enabled', 'users', $user_id);
+}
+
+function disableTwoFactor($user_id) {
+    global $pdo;
+    $stmt = $pdo->prepare("UPDATE users SET two_factor_enabled = 0, two_factor_secret = NULL WHERE id = ?");
+    $stmt->execute([$user_id]);
+    logAudit('2fa_disabled', 'users', $user_id);
 }

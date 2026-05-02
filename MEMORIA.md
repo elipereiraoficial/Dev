@@ -127,6 +127,54 @@
 
 ---
 
+## 📊 Audit Trail (02/05/2026)
+
+### Created Tables
+- `audit_log` - Registo completo de todas as ações
+
+### Audit Functions (functions.php)
+- `logAudit()` - Regista ação na tabela
+- `auditCreate()`, `auditUpdate()`, `auditDelete()` - Helpers
+- `auditLogin()` - Regista tentativas de login
+- `getAuditLog()` - Consulta logs (admin)
+
+### Logged Actions
+- Login bem-sucedido/falhado
+- Criação/Update/Delete de registos
+- Alterações de password
+- 2FA enabled/disabled
+
+---
+
+## 🔐 Two-Factor Authentication (02/05/2026)
+
+### Features
+- [x] Código de 6 dígitos
+- [x] Validade de 5 minutos
+- [x] Armazenamento em sessão (não BD)
+- [x] Funções: enableTwoFactor(), disableTwoFactor()
+- [x] Verificação: verifyTwoFactorCode()
+
+### Files Added
+- `scripts/two_factor.sql` - Schema
+- `includes/auth.php` - Funções 2FA
+
+---
+
+## 💾 Backup System (02/05/2026)
+
+### Features
+- Backup automático via mysqldump
+- Compressão gzip
+- Rotação: mantém últimos 7 backups
+- Logging de sucesso/falha
+
+### Files Added
+- `scripts/backup.php` - Script de backup
+- Execute via cron: `0 2 * * * php /path/to/backup.php`
+
+---
+
 ## 🔒 Security Enhancements (02/05/2026)
 
 ### Session Security (config.php)
