@@ -1,59 +1,29 @@
-# Luxury CRM - Documentação Completa do Projeto
+# Luxury CRM - Technical Documentation
 
-## 📋 Visão Geral do Projeto
-
-**Luxury CRM** é um sistema de gestão de relacionamento com clientes para o segmento de imobiliário de luxo. Desenvolvido em PHP com banco de dados PostgreSQL (Supabase).
+> **OBRIGATÓRIO**: Toda correção ou melhoria deve ser documentada aqui.
 
 ---
 
-## 🚀 Configuração do Ambiente
+## 📋 Project Overview
 
-### Ambiente de Desenvolvimento
-- **Servidor**: XAMPP (Apache + MySQL)
-- **PHP**: 8.2.12
-- **Banco de Dados**: Supabase PostgreSQL
-- **Path do Projeto**: `C:\xampp\htdocs\luxury-crm`
-
-### Configurações Técnicas
-- Extensões PHP ativadas: `pdo_pgsql`, `pgsql`
-- Conexão configurada em `config.php`
-- Timezone: Europe/Lisbon
+**Luxury CRM** is a complete Customer Relationship Management system for luxury real estate, developed in PHP 8.2 with PostgreSQL (Supabase).
 
 ---
 
-## 📦 Estrutura de Arquivos
+## 🚀 Current Status
 
-```
-luxury-crm/
-├── config.php           # Configuração da conexão com banco
-├── setup.php            # Script de criação das tabelas
-├── index.php            # Dashboard principal
-├── login.php            # Página de login
-├── logout.php           # Logout
-├── deals.php            # Pipeline Kanban de negócios
-├── clients.php          # Gestão de clientes
-├── properties.php       # Gestão de imóveis
-├── tasks.php            # Gestão de tarefas
-├── activities.php       # Histórico de atividades
-├── calendar.php         # Calendário
-├── settings.php         # Configurações do usuário
-├── includes/
-│   ├── auth.php         # Funções de autenticação
-│   ├── functions.php    # Funções auxiliares
-│   ├── header.php       # Cabeçalho HTML
-│   ├── sidebar.php      # Menu lateral
-│   └── footer.php       # Rodapé
-├── assets/              # Arquivos CSS/JS
-├── uploads/             # Arquivos上传
-└── MEMORIA.md           # Este documento
-```
+### Environment
+- **Server**: XAMPP (Apache)
+- **Database**: Supabase PostgreSQL
+- **Project Path**: `C:\xampp\htdocs\luxury-crm`
+- **URL**: http://localhost/luxury-crm/
 
 ---
 
-## 👥 Usuários Criados
+## 👥 Users Created
 
-| Email | Nome | Cargo | Password |
-|-------|------|-------|----------|
+| Email | Name | Role | Password |
+|-------|------|------|----------|
 | admin@luxury.pt | Administrador | admin | admin123 |
 | maria@luxury.pt | Maria Silva | agent | 123456 |
 | joao@luxury.pt | João Santos | agent | 123456 |
@@ -61,118 +31,101 @@ luxury-crm/
 
 ---
 
-## 🗄️ Estrutura do Banco de Dados
+## 📦 Database Tables
 
-### Tabelas Criadas
-
-1. **users** - Utilizadores do sistema
-2. **clients** - Clientes (compradores/vendedores)
-3. **properties** - Imóveis
-4. **deal_stages** - Etapas do pipeline Kanban
-5. **deals** - Negócios/oportunidades
-6. **tasks** - Tarefas
-7. **activities** - Histórico de atividades
-8. **media** - Anexos de imóveis
-
-### Stages do Pipeline (8 etapas)
-1. Novo Lead
-2. Contacto Inicial
-3. Visita Agendada
-4. Em Negociação
-5. Proposta Submetida
-6. Contrato
-7. Fechado Ganho
-8. Fechado Perdido
+1. **users** - System users
+2. **clients** - Clients (buyer/seller)
+3. **properties** - Properties
+4. **deal_stages** - Pipeline stages (8 stages)
+5. **deals** - Business opportunities
+6. **tasks** - Tasks
+7. **activities** - Activity history
+8. **media** - Property attachments
 
 ---
 
-## ✨ Funcionalidades Implementadas
+## ✅ Implemented Features
 
 ### Dashboard
-- ✅ KPIs clicáveis (Negócios Ativos, Fechados Ganho, Valor Pipeline, Imóveis)
-- ✅ Pipeline Kanban mini no dashboard
-- ✅ Referências clicáveis que levam para a ficha do negócio
-- ✅ Clientes clicáveis que levam para a ficha do cliente
-- ✅ Lista de tarefas próximas
-- ✅ Histórico de atividades recentes
+- [x] Interactive KPIs (clickable)
+- [x] Mini Kanban Pipeline
+- [x] Clickable references (go to deal)
+- [x] Clickable clients (go to client)
+- [x] Task list
+- [x] Activity feed
 
 ### Pipeline Kanban (deals.php)
-- ✅ Arrastar e soltar para mover negócios entre etapas
-- ✅ Auto-preenchimento do valor do negócio ao selecionar imóvel
-- ✅ Imóvel externo: criar imóvel de outra agência
-- ✅ Restrição: Imóvel em Proposta Submetida não pode ter outro negócio ativo
-- ✅ Título do negócio mostra o imóvel associado
-- ✅ Botão "Novo Negócio" no header
+- [x] Drag & drop between stages
+- [x] Auto-fill value from property
+- [x] External properties (other agencies)
+- [x] Restriction: Property in Proposal Submitted cannot have another deal
+- [x] Property title in deal card
 
-### Clientes
-- ✅ Lista de clientes com pesquisa
-- ✅ Criar/editar cliente
-- ✅ Tipo: buyer/seller/both
-- ✅ Orçamento mínimo e máximo
+### Calendar
+- [x] Monthly view
+- [x] Clickable tasks (go to edit)
+- [x] Clickable deals (go to edit)
+- [x] Upcoming events list
 
-### Imóveis
-- ✅ Lista de imóveis
-- ✅ Criar/editar imóvel
-- ✅ Tipos: apartment, house, villa, land, commercial
-- ✅ Estados: available, reserved, sold, rented, unavailable
+### Clients
+- [x] List with search
+- [x] Create/edit client
+- [x] Type: buyer/seller/both
 
-### Tarefas
-- ✅ Lista de tarefas com filtros
-- ✅ Criar/editar tarefa
-- ✅ Prioridades: urgent, high, medium, low
-- ✅ Status: pending, in_progress, completed
+### Properties
+- [x] List of properties
+- [x] Create/edit property
+- [x] Multiple types
 
-### Calendário
-- ✅ Visualização mensal
-- ✅ Eventos de tarefas clicáveis (vai para edição da tarefa)
-- ✅ Eventos de negócios (fecho previsto) clicáveis
-- ✅ Próximos eventos listados
-
-### Configurações
-- ✅ Editar perfil
-- ✅ Alterar password
+### Tasks
+- [x] Task list with filters
+- [x] Create/edit task
+- [x] Priority levels
 
 ---
 
-## 🔧 Correções Técnicas Realizadas
+## 🔧 Technical Fixes Applied
 
-1. **Driver PostgreSQL**: Ativadas extensões pdo_pgsql e pgsql no php.ini
-2. **Sintaxe PostgreSQL**: Corrigidos MONTH(), YEAR(), CURDATE() → EXTRACT(), CURRENT_DATE
-3. **Boolean no PostgreSQL**: Corrigido `active = 1` → `active = true`
-4. **Stages Duplicados**: Eliminados stages duplicados (16 → 8)
-5. **Botões Duplicados**: Removidos botões duplicados no header
-6. **Valor Nulo**: Corrigido property_id = 0 → NULL
-7. **Status Won**: Corrigida lógica de atualização de status ao mover para Fechado Ganho
+> **OBRIGATÓRIO**: Document all fixes here.
 
----
-
-## 🌐 URLs de Acesso
-
-- **Aplicação**: http://localhost/luxury-crm/
-- **Dashboard**: http://localhost/luxury-crm/index.php
-- **Login**: http://localhost/luxury-crm/login.php
+1. **[DONE]** PostgreSQL driver - Enabled pdo_pgsql and pgsql in php.ini
+2. **[DONE]** PostgreSQL syntax - Changed MONTH(), YEAR(), CURDATE() to EXTRACT(), CURRENT_DATE
+3. **[DONE]** Boolean comparison - Changed `active = 1` to `active = true`
+4. **[DONE]** Duplicate stages - Removed duplicate stages (16 → 8)
+5. **[DONE]** Duplicate buttons - Removed duplicate buttons in header
+6. **[DONE]** Null property_id - Changed property_id = 0 to NULL
+7. **[DONE]** Won status logic - Fixed logic when moving to "Fechado Ganho"
+8. **[DONE]** Calendar events - Added type field and made clickable
 
 ---
 
-## 📝 Notas Importantes
+## 🌍 GitHub Repository
 
-1. O sistema usa autenticação por sessão
-2. CSRF protection implementado
-3. Passwords são hasheadas com password_hash()
-4. Imóvel em etapa Proposta Submetida ou posterior bloqueia criação de novo negócio para o mesmo imóvel
-5. Ao mover negócio para "Fechado Ganho", o campo actual_close é preenchido automaticamente
-6. Ao mover negócio para "Fechado Perdido" ou "Contrato", status volta para "open"
+- **URL**: https://github.com/elipereiraoficial/Dev
+- **Branch**: master
+- **Files committed**: 22 files
 
 ---
 
-## 📅 Histórico de Versão
+## 📅 Version History
 
-**Versão 1.0.0** - 02/05/2026
-- Lançamento inicial do Luxury CRM
-- Módulos: Dashboard, Pipeline Kanban, Clientes, Imóveis, Tarefas, Calendário, Atividades, Configurações
-- Integração com Supabase PostgreSQL
+**v1.0.0** - 02/05/2026
+- Initial release
+- All core modules: Dashboard, Pipeline, Clients, Properties, Tasks, Calendar, Activities, Settings
 
 ---
 
-**Documento gerado em: 02/05/2026**
-**Total de sessões: 1**
+## 🔄 Update Log
+
+| Date | Change | Status |
+|------|--------|--------|
+| 02/05/2026 | Initial project setup | DONE |
+| 02/05/2026 | PostgreSQL fixes | DONE |
+| 02/05/2026 | Dashboard improvements | DONE |
+| 02/05/2026 | Kanban restrictions | DONE |
+| 02/05/2026 | GitHub upload | DONE |
+| 02/05/2026 | English README | DONE |
+
+---
+
+**Last Updated**: 02/05/2026
