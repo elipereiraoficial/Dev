@@ -33,8 +33,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         $stmt = $pdo->prepare("INSERT INTO clients (name, email, phone, type, source, budget_min, budget_max, preferences, notes, status, assigned_to) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         $stmt->execute([$name, $email, $phone, $type, $source, $budget_min, $budget_max, $preferences, $notes, $status, $assigned_to]);
-        logActivity('created', "Novo cliente: {$name}", 'client', $pdo->lastInsertId());
-        setFlash('success', 'Cliente criado com sucesso.');
+        $newClientId = $pdo->lastInsertId();
+        
+        // Send welcome email automatically
+        sendWelcomeEmail($newClientId);
+        
+        logActivity('created', "Novo cliente: {$name}", 'client', $newClientId);
+        setFlash('success', 'Cliente criado com sucesso. Email de boas-vindas enviado.');
     }
     header('Location: clients.php');
     exit;
@@ -198,7 +203,16 @@ include 'includes/sidebar.php';
                             </div>
                         </div>
                     </td>
-                    <td class="px-6 py-3 text-slate-600"><?php echo clean($c['phone'] ?? '-'); ?></td>
+                    <td class="px-6 py-3">
+                        <?php if ($c['phone']): ?>
+                            <div class="flex items-center gap-2">
+                                <span class="text-slate-600"><?php echo clean($c['phone']); ?></span>
+                                <a href="<?php echo formatWhatsApp($c['phone']); ?>" target="_blank" class="text-green-500 hover:text-green-600" title="Enviar WhatsApp">
+                                    <i class="fab fa-whatsapp"></i>
+                                </a>
+                            </div>
+                        <?php else: echo '-'; endif; ?>
+                    </td>
                     <td class="px-6 py-3">
                         <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-600 capitalize">
                             <?php echo $c['type'] === 'buyer' ? 'Comprador' : ($c['type'] === 'seller' ? 'Vendedor' : ($c['type'] === 'investor' ? 'Investidor' : 'Ambos')); ?>

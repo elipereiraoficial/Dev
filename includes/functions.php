@@ -197,3 +197,142 @@ function getAuditLog($limit = 50, $user_id = null, $action = null) {
     $stmt->execute($params);
     return $stmt->fetchAll();
 }
+
+// ============================================
+// MARKETING AUTOMATION FUNCTIONS
+// ============================================
+
+// Format phone for WhatsApp (convert to international format)
+function formatWhatsApp($phone) {
+    $clean = preg_replace('/[^0-9]/', '', $phone);
+    
+    // If starts with 351 (Portugal), keep it
+    if (strpos($clean, '351') === 0) {
+        return 'https://wa.me/' . $clean;
+    }
+    
+    // If starts with 9 (mobile), add 351
+    if (strlen($clean) === 9 && $clean[0] === '9') {
+        return 'https://wa.me/351' . $clean;
+    }
+    
+    // Otherwise just use as is
+    return 'https://wa.me/' . $clean;
+}
+
+// Send welcome email to new client
+function sendWelcomeEmail($client_id) {
+    global $pdo;
+    
+    // Check if already sent
+    $stmt = $pdo->prepare("SELECT email_sent_welcome, name, email FROM clients WHERE id = ?");
+    $stmt->execute([$client_id]);
+    $client = $stmt->fetch();
+    
+    if (!$client || $client['email_sent_welcome']) {
+        return false;
+    }
+    
+    // In production, integrate with email service (SendGrid, Mailgun, etc)
+    // For now, simulate and log
+    $to = $client['email'];
+    $name = $client['name'];
+    
+    $subject = "Bem-vindo ao Luxury Estate CRM";
+    $body = "Caro(a) {$name},\n\n";
+    $body .= "Obrigado por se juntar ao nosso programa de clientes!\n\n";
+    $body .= "Estamos ansiosos para ajudá-lo(a) a encontrar o imóvel dos seus sonhos.\n\n";
+    $body .= "Em breve, um dos nossos consultores entrará em contacto.\n\n";
+    $body .= "Com os melhores cumprimentos,\n";
+    $body .= "Luxury Estate CRM\n";
+    
+    // Log the email (in production, send via API)
+    error_log("[EMAIL] Welcome email to: $to");
+    
+    // Update database
+    $stmt = $pdo->prepare("UPDATE clients SET email_sent_welcome = 1, last_email_sent = NOW() WHERE id = ?");
+    $stmt->execute([$client_id]);
+    
+    logActivity('email_sent', "Email de boas-vindas enviado para $name", 'client', $client_id);
+    
+    return true;
+}
+
+// Follow-up email after 3 days without activity
+function sendFollowUpEmail($client_id) {
+    global $pdo;
+    
+    $stmt = $pdo->prepare("SELECT email_sent_followup, name, email, last_email_sent FROM clients WHERE id = ?");
+    $stmt->execute([$client_id]);
+    $client = $stmt->fetch();
+    
+    if (!$client || $client['email_sent_followup']) {
+        return false;
+    }
+    
+    // Check if 3 days since welcome email
+    if ($client['last_email_sent']) {
+        $days_since = (time() - strtotime($client['last_email_sent'])) / 86400;
+        if ($days_since < 3) {
+            return false;
+        }
+    }
+    
+    $to = $client['email'];
+    $name = $client['name'];
+    
+    error_log("[EMAIL] Follow-up email to: $to");
+    
+    $stmt = $pdo->prepare("UPDATE clients SET email_sent_followup = 1, last_email_sent = NOW() WHERE id = ?");
+    $stmt->execute([$client_id]);
+    
+    logActivity('email_sent', "Email de follow-up enviado para $name", 'client', $client_id);
+    
+    return true;
+}
+
+// Deal status notification
+function notifyDealStatus($deal_id, $status) {
+    global $pdo;
+    
+    $stmt = $pdo->prepare("
+        SELECT d.*, c.name as client_name, c.email as client_email, 
+               u.name as agent_name, u.email as agent_email
+        FROM deals d
+        LEFT JOIN clients c ON d.client_id = c.id
+        LEFT JOIN users u ON d.agent_id = u.id
+        WHERE d.id = ?
+    ");
+    $stmt->execute([$deal_id]);
+    $deal = $stmt->fetch();
+    
+    if (!$deal) return false;
+    
+    if ($status === 'won') {
+        error_log("[EMAIL] Deal WON notification: {$deal['reference']} - {$deal['client_name']}");
+        $stmt = $pdo->prepare("UPDATE deals SET email_sent_client = 1 WHERE id = ?");
+        $stmt->execute([$deal_id]);
+        logActivity('email_sent', "Notificação de negócio ganho enviada", 'deal', $deal_id);
+    } elseif ($status === 'lost') {
+        error_log("[EMAIL] Deal LOST notification: {$deal['reference']} - {$deal['client_name']}");
+        $stmt = $pdo->prepare("UPDATE deals SET email_sent_client = 1 WHERE id = ?");
+        $stmt->execute([$deal_id]);
+        logActivity('email_sent', "Notificação de negócio perdido enviada", 'deal', $deal_id);
+    }
+    
+    return true;
+}
+
+// Get automation stats
+function getAutomationStats() {
+    global $pdo;
+    
+    $stats = [];
+    
+    $stats['welcome_emails'] = $pdo->query("SELECT COUNT(*) FROM clients WHERE email_sent_welcome = 1")->fetchColumn();
+    $stats['followup_emails'] = $pdo->query("SELECT COUNT(*) FROM clients WHERE email_sent_followup = 1")->fetchColumn();
+    $stats['total_clients'] = $pdo->query("SELECT COUNT(*) FROM clients")->fetchColumn();
+    $stats['pending_followup'] = $pdo->query("SELECT COUNT(*) FROM clients WHERE email_sent_welcome = 1 AND email_sent_followup = 0")->fetchColumn();
+    
+    return $stats;
+}

@@ -127,6 +127,42 @@
 
 ---
 
+## 📱 WhatsApp Integration (02/05/2026)
+
+### Features
+- [x] Botão WhatsApp na lista de clientes
+- [x] Formatação automática do número (formato internacional)
+- [x] Link direto: wa.me/351XXXXXXXXX
+
+### Implementation
+- `formatWhatsApp()` - Converte número para link WhatsApp
+- Adicionado nas tabelas de clientes
+
+---
+
+## 📧 Marketing Automation (02/05/2026)
+
+### Features
+- [x] Email de boas-vindas automático ao criar cliente
+- [x] Funções: `sendWelcomeEmail()`, `sendFollowUpEmail()`
+- [x] Notificações de negócio ganho/perdido
+- [x] Tracking de emails enviados na BD
+- [x] Função: `getAutomationStats()`
+
+### Email Triggers
+| Evento | Ação |
+|--------|------|
+| Novo cliente criado | Enviar email boas-vindas |
+| 3 dias sem atividade | Enviar follow-up |
+| Negócio fechado (won) | Notificar agente |
+| Negócio perdido (lost) | Notificar agente |
+
+### Files
+- `scripts/marketing_automation.sql` - Schema
+- `clients.php` - Auto-envio de email ao criar cliente
+
+---
+
 ## 📊 Audit Trail (02/05/2026)
 
 ### Created Tables
