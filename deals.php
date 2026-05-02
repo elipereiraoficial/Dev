@@ -8,33 +8,49 @@ $action = $_GET['action'] ?? 'list';
 // Handle AJAX stage update
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajax_update_stage'])) {
     header('Content-Type: application/json');
-    $deal_id = intval($_POST['deal_id']);
-    $stage_id = intval($_POST['stage_id']);
+    
+    try {
+        $deal_id = intval($_POST['deal_id']);
+        $stage_id = intval($_POST['stage_id']);
 
-    // Get stage info
-    $stageStmt = $pdo->prepare("SELECT * FROM deal_stages WHERE id = ?");
-    $stageStmt->execute([$stage_id]);
-    $stage = $stageStmt->fetch();
+        // Get stage info
+        $stageStmt = $pdo->prepare("SELECT * FROM deal_stages WHERE id = ?");
+        $stageStmt->execute([$stage_id]);
+        $stage = $stageStmt->fetch();
 
-    $status = 'open';
-    $actual_close = null;
-    if (!empty($stage['is_closed'])) {
-        $status = !empty($stage['is_won']) ? 'won' : 'lost';
-        if (!empty($stage['is_won'])) {
-            $actual_close = date('Y-m-d');
+        if (!$stage) {
+            echo json_encode(['success' => false, 'error' => 'Stage not found']);
+            exit;
         }
-    }
 
-    if ($actual_close) {
-        $stmt = $pdo->prepare("UPDATE deals SET stage_id = ?, status = ?, actual_close = ?, updated_at = NOW() WHERE id = ?");
-        $stmt->execute([$stage_id, $status, $actual_close, $deal_id]);
-    } else {
-        $stmt = $pdo->prepare("UPDATE deals SET stage_id = ?, status = ?, actual_close = NULL, updated_at = NOW() WHERE id = ?");
-        $stmt->execute([$stage_id, $status, $deal_id]);
-    }
+        $status = 'open';
+        $actual_close = null;
+        if (!empty($stage['is_closed'])) {
+            $status = !empty($stage['is_won']) ? 'won' : 'lost';
+            if (!empty($stage['is_won'])) {
+                $actual_close = date('Y-m-d');
+            }
+        }
 
-    logActivity('status_change', "Negócio #{$deal_id} movido para {$stage['name']}", 'deal', $deal_id);
-    echo json_encode(['success' => true]);
+        if ($actual_close) {
+            $stmt = $pdo->prepare("UPDATE deals SET stage_id = ?, status = ?, actual_close = ?, updated_at = NOW() WHERE id = ?");
+            $stmt->execute([$stage_id, $status, $actual_close, $deal_id]);
+        } else {
+            $stmt = $pdo->prepare("UPDATE deals SET stage_id = ?, status = ?, actual_close = NULL, updated_at = NOW() WHERE id = ?");
+            $stmt->execute([$stage_id, $status, $deal_id]);
+        }
+
+        // Try to log activity, but don't fail if it doesn't work
+        try {
+            logActivity('status_change', "Negócio movido para " . $stage['name'], 'deal', $deal_id);
+        } catch (Exception $e) {
+            // Silent fail for activity logging
+        }
+
+        echo json_encode(['success' => true]);
+    } catch (Exception $e) {
+        echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+    }
     exit;
 }
 
@@ -363,6 +379,7 @@ function drop(ev, stageId) {
     const card = document.getElementById('deal-' + dealId);
     if (card) {
         card.style.opacity = '1';
+        card.classList.add('updating');
         // Move visually immediately for responsiveness
         col.appendChild(card);
     }
@@ -372,6 +389,12 @@ function drop(ev, stageId) {
     formData.append('ajax_update_stage', '1');
     formData.append('deal_id', dealId);
     formData.append('stage_id', stageId);
+    
+    // Get CSRF token
+    const csrfInput = document.querySelector('input[name="csrf_token"]');
+    if (csrfInput) {
+        formData.append('csrf_token', csrfInput.value);
+    }
 
     fetch('deals.php', {
         method: 'POST',
@@ -379,13 +402,25 @@ function drop(ev, stageId) {
     })
     .then(r => r.json())
     .then(data => {
-        if (!data.success) {
-            alert('Erro ao atualizar. Recarregue a página.');
-            location.reload();
+        if (card) card.classList.remove('updating');
+        if (data.success) {
+            // Visual feedback
+            if (card) {
+                card.classList.add('flash-success');
+                setTimeout(() => card.classList.remove('flash-success'), 1000);
+            }
+            console.log('Deal updated successfully');
+        } else {
+            console.error('Error:', data.error);
+            alert('Erro ao atualizar: ' + (data.error || 'Tente novamente'));
+            // Reload to restore correct state
+            setTimeout(() => location.reload(), 500);
         }
     })
-    .catch(() => {
-        location.reload();
+    .catch((err) => {
+        console.error('Network error:', err);
+        if (card) card.classList.remove('updating');
+        setTimeout(() => location.reload(), 500);
     });
 }
 

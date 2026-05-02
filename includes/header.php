@@ -55,6 +55,12 @@ $flash = getFlash();
         .kanban-card:active { cursor: grabbing; }
         .kanban-card:hover { transform: scale(1.02); }
         .kanban-drag-over { background-color: rgba(212, 175, 55, 0.05); border: 2px dashed #d4af37; }
+        .kanban-card.updating { opacity: 0.5; }
+        .kanban-card.flash-success { animation: flashGreen 1s; }
+        @keyframes flashGreen {
+            0%, 100% { box-shadow: 0 0 0 0 transparent; }
+            50% { box-shadow: 0 0 20px 5px rgba(34, 197, 94, 0.5); }
+        }
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: #f1f1f1; }
         ::-webkit-scrollbar-thumb { background: #d4af37; border-radius: 3px; }
