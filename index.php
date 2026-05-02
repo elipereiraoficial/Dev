@@ -45,7 +45,7 @@ $dealsData = $pdo->query("
     FROM deals d
     LEFT JOIN clients c ON d.client_id = c.id
     LEFT JOIN properties p ON d.property_id = p.id
-    WHERE d.status != 'lost' OR (d.status = 'lost' AND d.updated_at > NOW() - INTERVAL '30 days')
+    WHERE d.status != 'lost' OR (d.status = 'lost' AND d.updated_at > NOW() - INTERVAL 30 DAY)
     ORDER BY d.updated_at DESC
 ")->fetchAll();
 
