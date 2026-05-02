@@ -1,0 +1,27 @@
+# Ignore system files
+.DS_Store
+Thumbs.db
+
+# Ignore upload files
+/uploads/*
+
+# Ignore opencode folder
+.opencode/
+
+# Ignore config with credentials (create config.example.php instead)
+# config.php
+
+# Ignore log files
+*.log
+
+# Ignore temporary files
+*.tmp
+*.bak
+*.swp
+debug_*.php
+check_*.php
+fix_*.php
+test_*.php
+seed_*.php
+add_*.php
+create_*.php
