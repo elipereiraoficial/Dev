@@ -47,6 +47,81 @@ function isValidPhone($phone) {
     return strlen($clean) >= 9 && strlen($clean) <= 15;
 }
 
+// ============================================
+// DUPLICATE PREVENTION FUNCTIONS
+// ============================================
+
+// Check if email already exists in clients (excluding specific ID)
+function clientEmailExists($email, $exclude_id = null) {
+    global $pdo;
+    if (empty($email)) return false;
+    
+    if ($exclude_id) {
+        $stmt = $pdo->prepare("SELECT id FROM clients WHERE email = ? AND id != ?");
+        $stmt->execute([$email, $exclude_id]);
+    } else {
+        $stmt = $pdo->prepare("SELECT id FROM clients WHERE email = ?");
+        $stmt->execute([$email]);
+    }
+    return $stmt->fetch() !== false;
+}
+
+// Check if reference already exists in properties (excluding specific ID)
+function propertyReferenceExists($reference, $exclude_id = null) {
+    global $pdo;
+    if (empty($reference)) return false;
+    
+    if ($exclude_id) {
+        $stmt = $pdo->prepare("SELECT id FROM properties WHERE reference = ? AND id != ?");
+        $stmt->execute([$reference, $exclude_id]);
+    } else {
+        $stmt = $pdo->prepare("SELECT id FROM properties WHERE reference = ?");
+        $stmt->execute([$reference]);
+    }
+    return $stmt->fetch() !== false;
+}
+
+// Check if email already exists in users (excluding specific ID)
+function userEmailExists($email, $exclude_id = null) {
+    global $pdo;
+    if (empty($email)) return false;
+    
+    if ($exclude_id) {
+        $stmt = $pdo->prepare("SELECT id FROM users WHERE email = ? AND id != ?");
+        $stmt->execute([$email, $exclude_id]);
+    } else {
+        $stmt = $pdo->prepare("SELECT id FROM users WHERE email = ?");
+        $stmt->execute([$email]);
+    }
+    return $stmt->fetch() !== false;
+}
+
+// Find potential duplicates for a client
+function findClientDuplicates($name, $email, $phone) {
+    global $pdo;
+    $duplicates = [];
+    
+    if ($email) {
+        $stmt = $pdo->prepare("SELECT id, name, email, phone FROM clients WHERE email = ?");
+        $stmt->execute([$email]);
+        if ($stmt->fetch()) $duplicates[] = 'email';
+    }
+    
+    if ($phone) {
+        $stmt = $pdo->prepare("SELECT id, name, email, phone FROM clients WHERE phone = ?");
+        $stmt->execute([$phone]);
+        if ($stmt->fetch()) $duplicates[] = 'phone';
+    }
+    
+    if ($name) {
+        $stmt = $pdo->prepare("SELECT id, name, email, phone FROM clients WHERE LOWER(name) = LOWER(?)");
+        $stmt->execute([$name]);
+        if ($stmt->fetch()) $duplicates[] = 'name';
+    }
+    
+    return $duplicates;
+}
+
 // Sanitize filename
 function sanitizeFilename($filename) {
     $filename = preg_replace('/[^a-zA-Z0-9_-]/', '', $filename);

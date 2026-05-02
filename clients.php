@@ -26,11 +26,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $assigned_to = intval($_POST['assigned_to'] ?? 0) ?: null;
 
     if ($id) {
+        // Check for duplicate on update (excluding current record)
+        if ($email) {
+            $stmt = $pdo->prepare("SELECT id FROM clients WHERE email = ? AND id != ?");
+            $stmt->execute([$email, $id]);
+            if ($stmt->fetch()) {
+                setFlash('error', 'Já existe outro cliente com este email.');
+                header('Location: clients.php' . ($id ? "?edit=$id" : ""));
+                exit;
+            }
+        }
+        
         $stmt = $pdo->prepare("UPDATE clients SET name=?, email=?, phone=?, type=?, source=?, budget_min=?, budget_max=?, preferences=?, notes=?, status=?, assigned_to=? WHERE id=?");
         $stmt->execute([$name, $email, $phone, $type, $source, $budget_min, $budget_max, $preferences, $notes, $status, $assigned_to, $id]);
         logActivity('updated', "Cliente atualizado: {$name}", 'client', $id);
         setFlash('success', 'Cliente atualizado com sucesso.');
     } else {
+        // Check for duplicate on create
+        if ($email) {
+            $stmt = $pdo->prepare("SELECT id FROM clients WHERE email = ?");
+            $stmt->execute([$email]);
+            if ($stmt->fetch()) {
+                setFlash('error', 'Já existe um cliente com este email.');
+                header('Location: clients.php');
+                exit;
+            }
+        }
         $stmt = $pdo->prepare("INSERT INTO clients (name, email, phone, type, source, budget_min, budget_max, preferences, notes, status, assigned_to) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         $stmt->execute([$name, $email, $phone, $type, $source, $budget_min, $budget_max, $preferences, $notes, $status, $assigned_to]);
         $newClientId = $pdo->lastInsertId();

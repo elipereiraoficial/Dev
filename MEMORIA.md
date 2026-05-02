@@ -127,6 +127,36 @@
 
 ---
 
+## 🚫 Duplicate Prevention (02/05/2026)
+
+### Database Level
+- [x] Unique constraint on clients.email
+- [x] Unique constraint on properties.reference
+- [x] Unique constraint on users.email
+- [x] Cleanup of existing duplicates
+
+### Application Level
+- [x] `clientEmailExists()` - Check for duplicate email
+- [x] `propertyReferenceExists()` - Check for duplicate reference
+- [x] `userEmailExists()` - Check for duplicate user email
+- [x] `findClientDuplicates()` - Find potential duplicates
+
+### Validation Flow
+| Action | Check |
+|--------|-------|
+| New Client | Duplicate email → Block with message |
+| Update Client | Duplicate email (other record) → Block |
+| New Property | Duplicate reference → Block with message |
+| Update Property | Duplicate reference (other record) → Block |
+
+### Files
+- `scripts/duplicate_fix.sql` - Database constraints + cleanup
+- `clients.php` - Email validation on create/update
+- `properties.php` - Reference validation on create/update
+- `functions.php` - Helper functions
+
+---
+
 ## 📱 WhatsApp Integration (02/05/2026)
 
 ### Features

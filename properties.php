@@ -31,11 +31,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $agent_id = intval($_POST['agent_id'] ?? 0) ?: null;
 
     if ($id) {
+        // Check for duplicate reference on update
+        $stmt = $pdo->prepare("SELECT id FROM properties WHERE reference = ? AND id != ?");
+        $stmt->execute([$reference, $id]);
+        if ($stmt->fetch()) {
+            setFlash('error', 'Já existe outro imóvel com esta referência.');
+            header('Location: properties.php' . ($id ? "?edit=$id" : ""));
+            exit;
+        }
+        
         $stmt = $pdo->prepare("UPDATE properties SET reference=?, title=?, description=?, address=?, city=?, region=?, postal_code=?, price=?, type=?, status=?, bedrooms=?, bathrooms=?, area_m2=?, featured=?, owner_id=?, agent_id=? WHERE id=?");
         $stmt->execute([$reference, $title, $description, $address, $city, $region, $postal_code, $price, $type, $status, $bedrooms, $bathrooms, $area_m2, $featured, $owner_id, $agent_id, $id]);
         logActivity('updated', "Imóvel atualizado: {$title}", 'property', $id);
         setFlash('success', 'Imóvel atualizado com sucesso.');
     } else {
+        // Check for duplicate reference on create
+        $stmt = $pdo->prepare("SELECT id FROM properties WHERE reference = ?");
+        $stmt->execute([$reference]);
+        if ($stmt->fetch()) {
+            setFlash('error', 'Já existe um imóvel com esta referência. Gere uma nova referência.');
+            header('Location: properties.php');
+            exit;
+        }
         $stmt = $pdo->prepare("INSERT INTO properties (reference, title, description, address, city, region, postal_code, price, type, status, bedrooms, bathrooms, area_m2, featured, owner_id, agent_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         $stmt->execute([$reference, $title, $description, $address, $city, $region, $postal_code, $price, $type, $status, $bedrooms, $bathrooms, $area_m2, $featured, $owner_id, $agent_id]);
         logActivity('created', "Novo imóvel: {$title} ({$reference})", 'property', $pdo->lastInsertId());
