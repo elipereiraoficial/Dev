@@ -122,18 +122,54 @@
 
 ---
 
-## 📦 Files Updated
+## 🧹 Code Cleanup (02/05/2026)
 
-- `config.php` - MySQL connection
-- `database_mysql.sql` - MySQL schema
-- `index.php` - MySQL queries + INTERVAL fix
-- `deals.php` - MySQL queries
-- `calendar.php` - MySQL queries
-- `tasks.php` - MySQL queries
-- `clients.php` - MySQL queries
-- `properties.php` - MySQL queries
-- `activities.php` - MySQL queries
-- `includes/auth.php` - MySQL queries + auto-seed
+**Arquivos Eliminados (debug/temporários):**
+- `debug.php` - Debugger temporário
+- `test_login.php` - Teste de login
+- `fix.php`, `fix_complete.php`, `fix_admin.php` - Scripts de correção
+- `diagnostico.php` - Diagnóstico
+- `phpinfo.php` - Info PHP (risco segurança)
+- `setup.php` - Setup temporário
+
+**Scripts Eliminados:**
+- `scripts/debug_seed.php`
+- `scripts/insert_test_data.php`
+- `scripts/tables.php`
+- `scripts/verify.php`
+- `scripts/test_data.sql`
+
+**Scripts Mantidos:**
+- `scripts/seed.php` - Seed de dados de teste (útil para futuras resets)
+
+---
+
+## 📦 Project Structure
+
+```
+luxury-crm/
+├── index.php          # Dashboard principal
+├── login.php          # Autenticação
+├── logout.php         # Terminar sessão
+├── config.php         # Configuração BD
+├── deals.php          # Gestão de negócios
+├── clients.php        # Gestão de clientes
+├── properties.php     # Gestão de imóveis
+├── tasks.php          # Gestão de tarefas
+├── calendar.php       # Calendário
+├── activities.php     # Registo de atividades
+├── settings.php       # Configurações sistema
+├── includes/
+│   ├── auth.php       # Funções autenticação + auto-seed
+│   ├── functions.php  # Funções utilitárias
+│   ├── header.php     # Header HTML
+│   ├── footer.php     # Footer HTML
+│   └── sidebar.php    # Menu lateral
+├── scripts/
+│   └── seed.php       # Seed dados teste
+├── database_mysql.sql  # Schema base dados
+└── MEMORIA.md         # Documentação técnica
+```
 
 ---
 
@@ -146,13 +182,14 @@
 
 ## 📅 Last Update
 
-**02/05/2026** - Complete system working with test data:
+**02/05/2026** - Complete system with:
 - 10 users seeded
 - 5 properties seeded
 - 8 clients seeded
 - 9 deals (all pipeline stages) seeded
 - 5 tasks seeded
 - 6 activities seeded
+- Code cleanup completed
 
 ---
 
@@ -167,9 +204,38 @@ Pass: Cadu5540!!
 
 ---
 
+## 📝 Development Workflow
+
+### Before Any Commit
+1. ✅ Test the code works
+2. ✅ Run lint/typecheck if available
+3. ✅ Update MEMORIA.md with changes
+4. ✅ Review what files changed
+
+### Commit Message Format
+```
+<type>: <description>
+
+[optional: details]
+```
+
+Types: `feat`, `fix`, `refactor`, `docs`, `cleanup`, `deploy`
+
+### Git Flow
+```bash
+# 1. Make changes
+# 2. Test locally
+# 3. Update MEMORIA.md
+# 4. Commit with descriptive message
+# 5. Push to remote
+```
+
+---
+
 ## 📝 Notes for Future Development
 
 - Scripts folder contains seed.php for test data population
 - Auto-seed runs on first login (checks if users > 1)
 - All tables use proper MySQL syntax
 - Passwords use PHP password_hash() with BCRYPT
+- **IMPORTANT**: Always update MEMORIA.md before pushing!
