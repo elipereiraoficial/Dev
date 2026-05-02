@@ -1,6 +1,11 @@
 # Luxury CRM - Technical Documentation
 
 > **OBRIGATÓRIO**: Toda correção ou melhoria deve ser documentada aqui.
+> **IMPORTANTE**: Antes de CADA commit/push, devo:
+> 1. Testar o código
+> 2. Atualizar MEMORIA.md
+> 3. Remover ficheiros de debug
+> 4. Verificar WORKFLOW.md para guidelines
 
 ---
 

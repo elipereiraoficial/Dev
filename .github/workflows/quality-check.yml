@@ -1,0 +1,43 @@
+name: Quality Check
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Check MEMORIA.md updated
+        run: |
+          if git diff --name-only | grep -q "MEMORIA.md"; then
+            echo "✅ MEMORIA.md foi modificado"
+          else
+            echo "⚠️ ATENÇÃO: MEMORIA.md não foi modificado!"
+            echo "Verificar: WORKFLOW.md para guidelines"
+          fi
+          
+      - name: Check for debug files
+        run: |
+          DEBUG_FILES=$(git diff --name-only | grep -E "(debug|test_|fix_|diagnostico|phpinfo)" || true)
+          if [ -n "$DEBUG_FILES" ]; then
+            echo "⚠️ Ficheiros de debug detectados:"
+            echo "$DEBUG_FILES"
+            echo "Considere remover estes ficheiros antes de fazer merge"
+          else
+            echo "✅ Nenhum ficheiro de debug detectado"
+          fi
+          
+      - name: Summary
+        run: |
+          echo ""
+          echo "=== RESUMO DO PUSH ==="
+          echo "Ficheiros alterados:"
+          git diff --name-only
+          echo ""
+          echo "Verificar WORKFLOW.md para guidelines completos"
