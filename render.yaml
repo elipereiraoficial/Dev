@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: luxury-crm
+    env: php
+    buildCommand: ""
+    startCommand: "php -S $PORT -t ."
+    envVars:
+      - key: DB_HOST
+        value: db.wxliavsgxnstfonxlrnd.supabase.co
+      - key: DB_PORT
+        value: "5432"
+      - key: DB_NAME
+        value: postgres
+      - key: DB_USER
+        value: postgres
+      - key: DB_PASS
+        sync: false
+      - key: APP_ENV
+        value: production
