@@ -6,17 +6,17 @@
 
 ## 📋 Project Overview
 
-**Luxury CRM** is a complete Customer Relationship Management system for luxury real estate, developed in PHP 8.2 with PostgreSQL (Supabase).
+**Luxury CRM** - Complete CRM for luxury real estate
+- **Stack**: PHP 8.2 + MySQL
+- **Hostinger**: crm.elipereira.com
 
 ---
 
 ## 🚀 Current Status
 
-### Environment
-- **Server**: XAMPP (Apache)
-- **Database**: Supabase PostgreSQL
-- **Project Path**: `C:\xampp\htdocs\luxury-crm`
-- **URL**: http://localhost/luxury-crm/
+- **Domain**: https://crm.elipereira.com
+- **Database**: MySQL (Hostinger)
+- **Status**: Ready for deployment
 
 ---
 
@@ -31,101 +31,64 @@
 
 ---
 
-## 📦 Database Tables
-
-1. **users** - System users
-2. **clients** - Clients (buyer/seller)
-3. **properties** - Properties
-4. **deal_stages** - Pipeline stages (8 stages)
-5. **deals** - Business opportunities
-6. **tasks** - Tasks
-7. **activities** - Activity history
-8. **media** - Property attachments
-
----
-
 ## ✅ Implemented Features
 
 ### Dashboard
 - [x] Interactive KPIs (clickable)
 - [x] Mini Kanban Pipeline
-- [x] Clickable references (go to deal)
-- [x] Clickable clients (go to client)
-- [x] Task list
-- [x] Activity feed
+- [x] Clickable references
+- [x] Clickable clients
 
-### Pipeline Kanban (deals.php)
-- [x] Drag & drop between stages
+### Pipeline Kanban
+- [x] Drag & drop
 - [x] Auto-fill value from property
-- [x] External properties (other agencies)
-- [x] Restriction: Property in Proposal Submitted cannot have another deal
-- [x] Property title in deal card
+- [x] External properties
+- [x] Restriction for proposals
+- [x] Property title in cards
 
 ### Calendar
 - [x] Monthly view
-- [x] Clickable tasks (go to edit)
-- [x] Clickable deals (go to edit)
-- [x] Upcoming events list
+- [x] Clickable tasks and deals
+- [x] Upcoming events
 
-### Clients
-- [x] List with search
-- [x] Create/edit client
-- [x] Type: buyer/seller/both
-
-### Properties
-- [x] List of properties
-- [x] Create/edit property
-- [x] Multiple types
-
-### Tasks
-- [x] Task list with filters
-- [x] Create/edit task
-- [x] Priority levels
+### Clients, Properties, Tasks, Settings
+- [x] Full CRUD operations
 
 ---
 
-## 🔧 Technical Fixes Applied
+## 🔧 MySQL Conversions Applied
 
-> **OBRIGATÓRIO**: Document all fixes here.
-
-1. **[DONE]** PostgreSQL driver - Enabled pdo_pgsql and pgsql in php.ini
-2. **[DONE]** PostgreSQL syntax - Changed MONTH(), YEAR(), CURDATE() to EXTRACT(), CURRENT_DATE
-3. **[DONE]** Boolean comparison - Changed `active = 1` to `active = true`
-4. **[DONE]** Duplicate stages - Removed duplicate stages (16 → 8)
-5. **[DONE]** Duplicate buttons - Removed duplicate buttons in header
-6. **[DONE]** Null property_id - Changed property_id = 0 to NULL
-7. **[DONE]** Won status logic - Fixed logic when moving to "Fechado Ganho"
-8. **[DONE]** Calendar events - Added type field and made clickable
+1. PostgreSQL → MySQL connection
+2. `EXTRACT()` → `MONTH()`, `YEAR()`
+3. `CURRENT_DATE` → `CURDATE()`
+4. `NOW() - INTERVAL` → `DATE_SUB(NOW(), INTERVAL)`
+5. `active = true` → `active = 1`
+6. New `database_mysql.sql` created
 
 ---
 
-## 🌍 GitHub Repository
+## 📦 Files Updated
+
+- config.php - MySQL connection
+- database_mysql.sql - MySQL schema
+- index.php - MySQL queries
+- deals.php - MySQL queries
+- calendar.php - MySQL queries
+- tasks.php - MySQL queries
+- clients.php - MySQL queries
+- properties.php - MySQL queries
+- activities.php - MySQL queries
+- includes/auth.php - MySQL queries
+
+---
+
+## 🌍 GitHub
 
 - **URL**: https://github.com/elipereiraoficial/Dev
 - **Branch**: master
-- **Files committed**: 22 files
 
 ---
 
-## 📅 Version History
+## 📅 Last Update
 
-**v1.0.0** - 02/05/2026
-- Initial release
-- All core modules: Dashboard, Pipeline, Clients, Properties, Tasks, Calendar, Activities, Settings
-
----
-
-## 🔄 Update Log
-
-| Date | Change | Status |
-|------|--------|--------|
-| 02/05/2026 | Initial project setup | DONE |
-| 02/05/2026 | PostgreSQL fixes | DONE |
-| 02/05/2026 | Dashboard improvements | DONE |
-| 02/05/2026 | Kanban restrictions | DONE |
-| 02/05/2026 | GitHub upload | DONE |
-| 02/05/2026 | English README | DONE |
-
----
-
-**Last Updated**: 02/05/2026
+**02/05/2026** - MySQL conversion completed

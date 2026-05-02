@@ -62,7 +62,7 @@ $stmt = $pdo->prepare($sql);
 $stmt->execute($params);
 $clients = $stmt->fetchAll();
 
-$agents = $pdo->query("SELECT id, name FROM users WHERE active = true ORDER BY name ASC")->fetchAll();
+$agents = $pdo->query("SELECT id, name FROM users WHERE active = 1 ORDER BY name ASC")->fetchAll();
 
 $editClient = null;
 if (isset($_GET['edit'])) {

@@ -6,7 +6,7 @@ $page = 'Dashboard';
 
 // Stats
 $totalDeals = $pdo->query("SELECT COUNT(*) FROM deals WHERE status != 'lost'")->fetchColumn() ?: 0;
-$wonDeals = $pdo->query("SELECT COUNT(*) FROM deals WHERE status = 'won' AND EXTRACT(MONTH FROM actual_close) = EXTRACT(MONTH FROM CURRENT_DATE) AND EXTRACT(YEAR FROM actual_close) = EXTRACT(YEAR FROM CURRENT_DATE)")->fetchColumn() ?: 0;
+$wonDeals = $pdo->query("SELECT COUNT(*) FROM deals WHERE status = 'won' AND MONTH(actual_close) = MONTH(CURDATE()) AND YEAR(actual_close) = YEAR(CURDATE())")->fetchColumn() ?: 0;
 $totalProps = $pdo->query("SELECT COUNT(*) FROM properties WHERE status = 'available'")->fetchColumn() ?: 0;
 $totalClients = $pdo->query("SELECT COUNT(*) FROM clients WHERE status = 'active'")->fetchColumn() ?: 0;
 $pipelineValue = $pdo->query("SELECT COALESCE(SUM(value), 0) FROM deals WHERE status = 'open'")->fetchColumn() ?: 0;
@@ -26,7 +26,7 @@ $upcomingTasks = $pdo->query("
     SELECT t.*, u.name as assigned_name
     FROM tasks t
     LEFT JOIN users u ON t.assigned_to = u.id
-    WHERE t.status != 'completed' AND (t.due_date IS NULL OR t.due_date >= CURRENT_DATE)
+    WHERE t.status != 'completed' AND (t.due_date IS NULL OR t.due_date >= CURDATE())
     ORDER BY t.due_date ASC LIMIT 5
 ")->fetchAll();
 

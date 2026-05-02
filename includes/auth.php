@@ -32,7 +32,7 @@ function currentUser() {
 // Login user
 function login($email, $password) {
     global $pdo;
-    $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ? AND active = true");
+    $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ? AND active = 1");
     $stmt->execute([$email]);
     $user = $stmt->fetch();
 

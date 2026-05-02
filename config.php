@@ -1,13 +1,13 @@
 <?php
 // Luxury Real Estate CRM - Configuration
-// Supabase PostgreSQL Connection
+// MySQL Connection (Hostinger)
 
-// Database credentials - use environment variables in production
-define('DB_HOST', getenv('DB_HOST') ?: 'db.wxliavsgxnstfonxlrnd.supabase.co');
-define('DB_PORT', getenv('DB_PORT') ?: '5432');
-define('DB_NAME', getenv('DB_NAME') ?: 'postgres');
-define('DB_USER', getenv('DB_USER') ?: 'postgres');
-define('DB_PASS', getenv('DB_PASS') ?: 'Cadu554076!!');
+// Database credentials
+define('DB_HOST', getenv('DB_HOST') ?: 'localhost');
+define('DB_PORT', getenv('DB_PORT') ?: '3306');
+define('DB_NAME', getenv('DB_NAME') ?: 'luxury_crm');
+define('DB_USER', getenv('DB_USER') ?: 'luxury_user');
+define('DB_PASS', getenv('DB_PASS') ?: '');
 
 // Application Settings
 define('APP_NAME', 'Luxury Estate CRM');
@@ -33,10 +33,10 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Database connection (PostgreSQL)
+// Database connection (MySQL)
 try {
     $pdo = new PDO(
-        "pgsql:host=" . DB_HOST . ";port=" . DB_PORT . ";dbname=" . DB_NAME,
+        "mysql:host=" . DB_HOST . ";port=" . DB_PORT . ";dbname=" . DB_NAME . ";charset=utf8mb4",
         DB_USER,
         DB_PASS,
         [

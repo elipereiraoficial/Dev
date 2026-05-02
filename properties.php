@@ -68,7 +68,7 @@ $stmt->execute($params);
 $properties = $stmt->fetchAll();
 
 $clients = $pdo->query("SELECT id, name FROM clients WHERE type IN ('seller','both') ORDER BY name ASC")->fetchAll();
-$agents = $pdo->query("SELECT id, name FROM users WHERE active = true ORDER BY name ASC")->fetchAll();
+$agents = $pdo->query("SELECT id, name FROM users WHERE active = 1 ORDER BY name ASC")->fetchAll();
 
 $editProp = null;
 if (isset($_GET['edit'])) {

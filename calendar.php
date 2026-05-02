@@ -37,7 +37,7 @@ foreach ($tasks as $task) {
 $deals = $pdo->query("
     SELECT id, title, expected_close, stage_id, 'deal' as type
     FROM deals 
-    WHERE EXTRACT(MONTH FROM expected_close) = $month AND EXTRACT(YEAR FROM expected_close) = $year AND expected_close IS NOT NULL AND status = 'open'
+    WHERE MONTH(expected_close) = $month AND YEAR(expected_close) = $year AND expected_close IS NOT NULL AND status = 'open'
 ")->fetchAll();
 
 foreach ($deals as $deal) {
@@ -132,10 +132,10 @@ include 'includes/sidebar.php';
         <?php 
         $upcoming = $pdo->query("
             SELECT t.id, t.title, t.due_date, t.priority, 'task' as type FROM tasks t 
-            WHERE t.due_date >= CURRENT_DATE AND t.status != 'completed'
+            WHERE t.due_date >= CURDATE() AND t.status != 'completed'
             UNION ALL
             SELECT d.id, d.title, d.expected_close as due_date, 'medium' as priority, 'deal' as type FROM deals d 
-            WHERE d.expected_close >= CURRENT_DATE AND d.status = 'open'
+            WHERE d.expected_close >= CURDATE() AND d.status = 'open'
             ORDER BY due_date ASC LIMIT 5
         ")->fetchAll();
         
