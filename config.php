@@ -7,7 +7,7 @@ define('DB_HOST', 'localhost');  // Hostinger usa localhost
 define('DB_PORT', '3306');
 define('DB_NAME', 'u415107443_luxury_crm');  // O nome do banco que criaste
 define('DB_USER', 'u415107443_luxury_user'); // Username da Hostinger
-define('DB_PASS', '');  // <-- PREENCHER COM A SENHA QUE CRIARES
+define('DB_PASS', 'Cadu5540!!');
 
 // Application Settings
 define('APP_NAME', 'Luxury Estate CRM');
