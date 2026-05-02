@@ -58,16 +58,16 @@ function seedTestDataIfNeeded() {
         
         $password = password_hash('123456', PASSWORD_DEFAULT);
         
-        $pdo->exec("INSERT INTO users (name, email, password, role, department, active, created_at) VALUES 
-            ('Maria Santos', 'maria.santos@luxury.pt', '$password', 'vendas', 'user', 1, NOW()),
-            ('Pedro Costa', 'pedro.costa@luxury.pt', '$password', 'vendas', 'user', 1, NOW()),
-            ('Sofia Ferreira', 'sofia.ferreira@luxury.pt', '$password', 'gerente', 'manager', 1, NOW()),
-            ('João Lima', 'joao.lima@luxury.pt', '$password', 'vendas', 'user', 1, NOW()),
-            ('Ana Rodrigues', 'ana.rodrigues@luxury.pt', '$password', 'vendas', 'user', 1, NOW()),
-            ('Miguel Santos', 'miguel.santos@luxury.pt', '$password', 'suporte', 'user', 1, NOW()),
-            ('Laura Martins', 'laura.martins@luxury.pt', '$password', 'gerente', 'manager', 1, NOW()),
-            ('Tiago Almeida', 'tiago.almeida@luxury.pt', '$password', 'vendas', 'user', 1, NOW()),
-            ('Carla Sousa', 'carla.sousa@luxury.pt', '$password', 'vendas', 'user', 1, NOW())");
+        $pdo->exec("INSERT INTO users (name, email, password, role, active, created_at) VALUES 
+            ('Maria Santos', 'maria.santos@luxury.pt', '$password', 'vendas', 1, NOW()),
+            ('Pedro Costa', 'pedro.costa@luxury.pt', '$password', 'vendas', 1, NOW()),
+            ('Sofia Ferreira', 'sofia.ferreira@luxury.pt', '$password', 'gerente', 1, NOW()),
+            ('João Lima', 'joao.lima@luxury.pt', '$password', 'vendas', 1, NOW()),
+            ('Ana Rodrigues', 'ana.rodrigues@luxury.pt', '$password', 'vendas', 1, NOW()),
+            ('Miguel Santos', 'miguel.santos@luxury.pt', '$password', 'suporte', 1, NOW()),
+            ('Laura Martins', 'laura.martins@luxury.pt', '$password', 'gerente', 1, NOW()),
+            ('Tiago Almeida', 'tiago.almeida@luxury.pt', '$password', 'vendas', 1, NOW()),
+            ('Carla Sousa', 'carla.sousa@luxury.pt', '$password', 'vendas', 1, NOW())");
         
         $pdo->exec("INSERT INTO properties (title, type, location, price, status, description, created_at) VALUES 
             ('Apartamento T2 Centro', 'apartment', 'Lisboa', 450000, 'available', 'Apartamento T2 no centro de Lisboa', NOW()),
