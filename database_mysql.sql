@@ -1,9 +1,6 @@
 -- Luxury CRM - Database Schema for MySQL
 -- Hostinger Compatible
-
--- Criar banco de dados
-CREATE DATABASE IF NOT EXISTS luxury_crm CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE luxury_crm;
+-- Execute this in database: u415107443_luxury_crm
 
 -- Users table
 CREATE TABLE IF NOT EXISTS users (
@@ -144,17 +141,15 @@ CREATE TABLE IF NOT EXISTS media (
 
 -- Insert default deal stages
 INSERT INTO deal_stages (name, stage_order, color, is_closed, is_won) VALUES
-    ('Novo Lead', 1, '#64748b', 0, 0),
-    ('Contacto Inicial', 2, '#3b82f6', 0, 0),
-    ('Visita Agendada', 3, '#8b5cf6', 0, 0),
-    ('Em Negociação', 4, '#f59e0b', 0, 0),
-    ('Proposta Submetida', 5, '#f97316', 0, 0),
-    ('Contrato', 6, '#ec4899', 0, 0),
-    ('Fechado Ganho', 7, '#10b981', 1, 1),
-    ('Fechado Perdido', 8, '#ef4444', 1, 0)
-ON DUPLICATE KEY UPDATE name=VALUES(name);
+('Novo Lead', 1, '#64748b', 0, 0),
+('Contacto Inicial', 2, '#3b82f6', 0, 0),
+('Visita Agendada', 3, '#8b5cf6', 0, 0),
+('Em Negociação', 4, '#f59e0b', 0, 0),
+('Proposta Submetida', 5, '#f97316', 0, 0),
+('Contrato', 6, '#ec4899', 0, 0),
+('Fechado Ganho', 7, '#10b981', 1, 1),
+('Fechado Perdido', 8, '#ef4444', 1, 0);
 
 -- Insert default admin user (password: admin123)
 INSERT INTO users (name, email, password, role) VALUES
-    ('Administrador', 'admin@luxury.pt', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin')
-ON DUPLICATE KEY UPDATE email=email;
+('Administrador', 'admin@luxury.pt', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin');
