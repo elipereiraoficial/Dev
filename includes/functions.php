@@ -137,14 +137,20 @@ function countDealsByStage($stage_id) {
 function logAudit($action, $table_name = null, $record_id = null, $old_values = null, $new_values = null) {
     global $pdo;
     
-    $user_id = $_SESSION['user_id'] ?? null;
-    $ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
-    $user_agent = $_SERVER['HTTP_USER_AGENT'] ?? 'unknown';
-    
-    $old_json = $old_values ? json_encode($old_values) : null;
-    $new_json = $new_values ? json_encode($new_values) : null;
-    
     try {
+        // Check if table exists
+        $stmt = $pdo->query("SHOW TABLES LIKE 'audit_log'");
+        if ($stmt->rowCount() === 0) {
+            return; // Table doesn't exist yet
+        }
+        
+        $user_id = $_SESSION['user_id'] ?? null;
+        $ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+        $user_agent = $_SERVER['HTTP_USER_AGENT'] ?? 'unknown';
+        
+        $old_json = $old_values ? json_encode($old_values) : null;
+        $new_json = $new_values ? json_encode($new_values) : null;
+        
         $stmt = $pdo->prepare("INSERT INTO audit_log (user_id, action, table_name, record_id, old_values, new_values, ip_address, user_agent) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
         $stmt->execute([$user_id, $action, $table_name, $record_id, $old_json, $new_json, $ip, $user_agent]);
     } catch (Exception $e) {
@@ -224,38 +230,42 @@ function formatWhatsApp($phone) {
 function sendWelcomeEmail($client_id) {
     global $pdo;
     
-    // Check if already sent
-    $stmt = $pdo->prepare("SELECT email_sent_welcome, name, email FROM clients WHERE id = ?");
-    $stmt->execute([$client_id]);
-    $client = $stmt->fetch();
-    
-    if (!$client || $client['email_sent_welcome']) {
+    try {
+        // Check if column exists first
+        $stmt = $pdo->query("SHOW COLUMNS FROM clients LIKE 'email_sent_welcome'");
+        if ($stmt->rowCount() === 0) {
+            error_log("[EMAIL] Skipping - column not in DB yet");
+            return false;
+        }
+        
+        // Check if already sent
+        $stmt = $pdo->prepare("SELECT email_sent_welcome, name, email FROM clients WHERE id = ?");
+        $stmt->execute([$client_id]);
+        $client = $stmt->fetch();
+        
+        if (!$client || $client['email_sent_welcome']) {
+            return false;
+        }
+        
+        // In production, integrate with email service (SendGrid, Mailgun, etc)
+        // For now, simulate and log
+        $to = $client['email'];
+        $name = $client['name'];
+        
+        // Log the email (in production, send via API)
+        error_log("[EMAIL] Welcome email to: $to");
+        
+        // Update database
+        $stmt = $pdo->prepare("UPDATE clients SET email_sent_welcome = 1, last_email_sent = NOW() WHERE id = ?");
+        $stmt->execute([$client_id]);
+        
+        logActivity('email_sent', "Email de boas-vindas enviado para $name", 'client', $client_id);
+        
+        return true;
+    } catch (Exception $e) {
+        error_log("[EMAIL] Error: " . $e->getMessage());
         return false;
     }
-    
-    // In production, integrate with email service (SendGrid, Mailgun, etc)
-    // For now, simulate and log
-    $to = $client['email'];
-    $name = $client['name'];
-    
-    $subject = "Bem-vindo ao Luxury Estate CRM";
-    $body = "Caro(a) {$name},\n\n";
-    $body .= "Obrigado por se juntar ao nosso programa de clientes!\n\n";
-    $body .= "Estamos ansiosos para ajudá-lo(a) a encontrar o imóvel dos seus sonhos.\n\n";
-    $body .= "Em breve, um dos nossos consultores entrará em contacto.\n\n";
-    $body .= "Com os melhores cumprimentos,\n";
-    $body .= "Luxury Estate CRM\n";
-    
-    // Log the email (in production, send via API)
-    error_log("[EMAIL] Welcome email to: $to");
-    
-    // Update database
-    $stmt = $pdo->prepare("UPDATE clients SET email_sent_welcome = 1, last_email_sent = NOW() WHERE id = ?");
-    $stmt->execute([$client_id]);
-    
-    logActivity('email_sent', "Email de boas-vindas enviado para $name", 'client', $client_id);
-    
-    return true;
 }
 
 // Follow-up email after 3 days without activity
