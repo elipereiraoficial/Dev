@@ -12,7 +12,7 @@ define('DB_PASS', getenv('DB_PASS') ?: 'Cadu554076!!');
 // Application Settings
 define('APP_NAME', 'Luxury Estate CRM');
 define('APP_VERSION', '1.0.0');
-define('BASE_URL', getenv('BASE_URL') ?: '');
+define('BASE_URL', 'https://crm.elipereira.com');
 define('UPLOAD_DIR', __DIR__ . '/uploads/');
 define('MAX_UPLOAD_SIZE', 5 * 1024 * 1024);
 
