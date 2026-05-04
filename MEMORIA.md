@@ -366,10 +366,10 @@ luxury-crm/
 
 ## 📅 Last Update
 
-**04/05/2026** - Sidebar Updated ✅
-- Removed old Pipeline Kanban (not working)
-- Renamed "Kanban Novo" to "Pipeline Kanban"
-- 8 modules in sidebar: Dashboard, Pipeline, Clientes, Imóveis, Tarefas, Atividades, Calendário, Definições
+**04/05/2026** - Kanban & Dashboard Fixes ✅
+- kanban.php now includes sidebar (full layout)
+- Dashboard query fixed to show all stages including "Fechado Ganho" and "Fechado Perdido"
+- Pipeline Kanban now working with all 8 stages
 
 ---
 

@@ -32,6 +32,7 @@ foreach ($deals as $deal) {
 }
 ?>
 <?php include 'includes/header.php'; ?>
+<?php include 'includes/sidebar.php'; ?>
 
 <div class="flex flex-col h-full">
     <div class="mb-4 shrink-0">

@@ -38,14 +38,13 @@ $recentActivities = $pdo->query("
     ORDER BY a.created_at DESC LIMIT 6
 ")->fetchAll();
 
-// Kanban Pipeline Data
+// Kanban Pipeline Data - Mostrar todas as fases incluindo ganhos e perdidos
 $stages = getStages();
 $dealsData = $pdo->query("
     SELECT d.*, c.name as client_name, p.title as property_title
     FROM deals d
     LEFT JOIN clients c ON d.client_id = c.id
     LEFT JOIN properties p ON d.property_id = p.id
-    WHERE d.status != 'lost' OR (d.status = 'lost' AND d.updated_at > NOW() - INTERVAL 30 DAY)
     ORDER BY d.updated_at DESC
 ")->fetchAll();
 
