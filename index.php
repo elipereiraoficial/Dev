@@ -213,7 +213,7 @@ include 'includes/sidebar.php';
 <div class="mt-6">
     <div class="flex items-center justify-between mb-4">
         <h3 class="font-semibold text-lg text-luxury-900">Pipeline de Negócios</h3>
-        <a href="deals.php" class="text-sm text-luxury-gold hover:text-luxury-gold-dark font-medium">Ver Pipeline Completo</a>
+        <a href="kanban.php" class="text-sm text-luxury-gold hover:text-luxury-gold-dark font-medium">Ver Pipeline Completo</a>
     </div>
     <div class="flex gap-4 overflow-x-auto pb-4">
         <?php foreach ($stages as $stage):

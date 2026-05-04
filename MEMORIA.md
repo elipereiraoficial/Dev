@@ -63,6 +63,8 @@
 | laura.martins@luxury.pt | Laura Martins | gerente | 123456 |
 | tiago.almeida@luxury.pt | Tiago Almeida | vendas | 123456 |
 | carla.sousa@luxury.pt | Carla Sousa | vendas | 123456 |
+| ricardo.mendes@luxury.pt | Ricardo Mendes | vendas | 123456 |
+| patricia.silva@luxury.pt | Patrícia Silva | gerente | 123456 |
 
 ---
 
@@ -366,10 +368,12 @@ luxury-crm/
 
 ## 📅 Last Update
 
-**04/05/2026** - Kanban & Dashboard Fixes ✅
+**04/05/2026** - Auditoria & Correções ✅
 - kanban.php now includes sidebar (full layout)
-- Dashboard query fixed to show all stages including "Fechado Ganho" and "Fechado Perdido"
-- Pipeline Kanban now working with all 8 stages
+- Dashboard query fixed to show all 8 stages
+- Seed.php: Fixed 2025-008 deal to use "Fechado Ganho" stage (was incorrectly using "Fechado Perdido")
+- Added 2 new users: Ricardo Mendes, Patrícia Silva
+- Fixed "Ver Pipeline Completo" link in dashboard to point to kanban.php
 
 ---
 

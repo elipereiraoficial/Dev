@@ -22,6 +22,8 @@ try {
         ['Laura Martins', 'laura.martins@luxury.pt', 'gerente', '+351 910 000 007'],
         ['Tiago Almeida', 'tiago.almeida@luxury.pt', 'vendas', '+351 910 000 008'],
         ['Carla Sousa', 'carla.sousa@luxury.pt', 'vendas', '+351 910 000 009'],
+        ['Ricardo Mendes', 'ricardo.mendes@luxury.pt', 'vendas', '+351 910 000 010'],
+        ['Patrícia Silva', 'patricia.silva@luxury.pt', 'gerente', '+351 910 000 011'],
     ];
     
     foreach ($users as $u) {
@@ -88,9 +90,9 @@ try {
         ['2025-004', 'Penthouse - Resposta pendente', 4, 4, $stages[3], 850000, 'open'],
         ['2025-005', 'Quinta Douro - Due diligence', 5, 5, $stages[4], 2300000, 'open'],
         ['2025-006', 'Apartamento - Documentação', 6, 1, $stages[5], 410000, 'open'],
-        ['2025-007', 'Moradia - Contrato promessa', 7, 2, $stages[6], 1150000, 'open'],
-        ['2025-008', 'Loft - FECHADO!', 8, 3, $stages[7], 380000, 'won'],
-        ['2025-012', 'Loft - Perdeu', 4, 3, 8, 360000, 'lost'],
+        ['2025-007', 'Moradia - Contrato promessa', 7, 2, $stages[5], 1150000, 'open'],
+        ['2025-008', 'Loft - FECHADO GANHO!', 8, 3, $stages[6], 380000, 'won'],
+        ['2025-012', 'Loft - Perdeu', 4, 3, $stages[7], 360000, 'lost'],
     ];
     
     foreach ($deals as $d) {
