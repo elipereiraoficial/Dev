@@ -24,7 +24,7 @@ jobs:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          directory: /public_html
+          directory: /home/u415107443/domains/elipereira.com/crm
           port: 21
           timeout: 30
           forced: true
