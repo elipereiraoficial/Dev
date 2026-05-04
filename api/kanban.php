@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit;
 }
 
-require_once __DIR__ . '/includes/auth.php';
+require_once __DIR__ . '/../includes/auth.php';
 
 // Check auth
 if (empty($_SESSION['user_id'])) {
@@ -31,8 +31,11 @@ if (empty($_SESSION['user_id'])) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     global $pdo;
     
+    error_log("kanban.php: POST received - deal_id=" . ($_POST['deal_id'] ?? 'none') . ", stage_id=" . ($_POST['stage_id'] ?? 'none'));
+    
     // Validate input
     if (!isset($_POST['deal_id']) || !isset($_POST['stage_id'])) {
+        error_log("kanban.php: Missing parameters");
         echo json_encode(['success' => false, 'error' => 'Missing parameters']);
         exit;
     }
@@ -76,11 +79,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     
     $affected = $stmt->rowCount();
+    error_log("kanban.php: Updated deal $deal_id to stage $stage_id, affected rows: $affected");
     
     // Verify
     $verify = $pdo->prepare("SELECT stage_id FROM deals WHERE id = ?");
     $verify->execute([$deal_id]);
     $newStage = $verify->fetch();
+    error_log("kanban.php: Verified stage_id = " . $newStage['stage_id']);
     
     echo json_encode([
         'success' => true, 
