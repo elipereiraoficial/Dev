@@ -377,6 +377,7 @@ luxury-crm/
 - All modules (clients, properties, tasks, activities, calendar, settings) have sidebar
 - api/kanban.php: Used for drag-drop updates
 - All links verified - no broken references
+- Removed old pipeline.php (redundant, using kanban.php)
 
 ---
 
