@@ -34,6 +34,11 @@
 
 ## 🔧 Recent Fixes
 
+### 2026-05-04 - FTP Deploy Workflow
+- Added GitHub Actions workflow for automatic FTP deployment
+- Workflow file: `.github/workflows/deploy.yml`
+- Requires FTP secrets to be configured in GitHub
+
 ### 2026-05-04 - Kanban Auto-Refresh
 - Added automatic page refresh (500ms) after dropping a card in kanban
 - Solves issue where column counts weren't updating in real-time

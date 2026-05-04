@@ -24,7 +24,7 @@ jobs:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          directory: ${{ secrets.FTP_DIRECTORY }}
+          directory: /public_html
           port: 21
           timeout: 30
           forced: true
