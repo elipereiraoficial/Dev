@@ -368,15 +368,12 @@ luxury-crm/
 
 ## 📅 Last Update
 
-**04/05/2026** - Auditoria Completa ✅
-- kanban.php now includes sidebar (full layout)
-- Dashboard query fixed to show all 8 stages
-- Seed.php: Fixed 2025-008 deal to use "Fechado Ganho" stage
-- Added 2 new users: Ricardo Mendes, Patrícia Silva
-- Fixed "Ver Pipeline Completo" link to point to kanban.php
-- Fixed deals.php filter (won/lost/open) and page title
-- Fixed wonDeals KPI to show total, not just this month
-- Added scripts/fix_deals.sql to fix existing deal in database
+**04/05/2026** - Auditoria Completa v2 ✅
+- kanban.php: Fixed page title to "Pipeline Kanban"
+- Removed pipeline.php references from sidebar (now uses deals.php)
+- Removed old pipeline.php file (redundant, using kanban.php)
+- All links verified and working
+- 8 stages in pipeline: Novo Lead, Contacto Inicial, Visita Agendada, Em Negociação, Proposta Submetida, Contrato, Fechado Ganho, Fechado Perdido
 
 ---
 

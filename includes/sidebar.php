@@ -70,8 +70,8 @@ $user = currentUser();
         <div class="flex items-center gap-4">
             <?php 
             $pageUrl = basename($_SERVER['PHP_SELF']);
-            if ($pageUrl === 'deals.php' || $pageUrl === 'pipeline.php'): ?>
-            <a href="pipeline.php?action=new" class="hidden sm:flex items-center gap-2 px-4 py-2 gold-gradient text-luxury-900 text-sm font-semibold rounded-lg hover:opacity-90 shadow-md">
+            if ($pageUrl === 'deals.php' || $pageUrl === 'kanban.php'): ?>
+            <a href="deals.php?action=new" class="hidden sm:flex items-center gap-2 px-4 py-2 gold-gradient text-luxury-900 text-sm font-semibold rounded-lg hover:opacity-90 shadow-md">
                 <i class="fas fa-plus"></i> Novo Negócio
             </a>
             <?php endif; ?>

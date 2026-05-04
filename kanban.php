@@ -3,7 +3,7 @@
 require_once 'includes/auth.php';
 requireAuth();
 
-$page = 'Pipeline';
+$page = 'Pipeline Kanban';
 
 // Prevent caching
 header('Cache-Control: no-store, no-cache, must-revalidate');
