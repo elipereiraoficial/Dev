@@ -108,12 +108,12 @@
 - [x] Clickable references
 - [x] Clickable clients
 
-### Pipeline Kanban
-- [x] Drag & drop
+### Pipeline Kanban (kanban.php)
+- [x] Drag & drop between stages
 - [x] Auto-fill value from property
 - [x] External properties
-- [x] Restriction for proposals
 - [x] Property title in cards
+- [x] Auto-refresh after drop
 
 ### Calendar
 - [x] Monthly view
@@ -366,10 +366,10 @@ luxury-crm/
 
 ## 📅 Last Update
 
-**04/05/2026** - FTP Deploy Test ✅
-- FTP auto-deploy configured and working
-- Testing auto-deploy now
-- All previous features working
+**04/05/2026** - Sidebar Updated ✅
+- Removed old Pipeline Kanban (not working)
+- Renamed "Kanban Novo" to "Pipeline Kanban"
+- 8 modules in sidebar: Dashboard, Pipeline, Clientes, Imóveis, Tarefas, Atividades, Calendário, Definições
 
 ---
 

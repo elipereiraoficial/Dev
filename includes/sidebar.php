@@ -1,8 +1,7 @@
 <?php
 $menu = [
     ['index.php', 'fas fa-th-large', 'Dashboard'],
-    ['pipeline.php', 'fas fa-columns', 'Pipeline Kanban'],
-    ['kanban.php', 'fas fa-table', 'Kanban Novo'],
+    ['kanban.php', 'fas fa-columns', 'Pipeline Kanban'],
     ['clients.php', 'fas fa-users', 'Clientes'],
     ['properties.php', 'fas fa-building', 'Imóveis'],
     ['tasks.php', 'fas fa-tasks', 'Tarefas'],
