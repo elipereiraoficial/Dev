@@ -1,4 +1,24 @@
 <?php
+// Disable ALL caching
+if (function_exists('opcache_get_status')) {
+    opcache_reset();
+}
+if (function_exists('apc_clear_cache')) {
+    apc_clear_cache();
+}
+
+// Prevent caching
+header('Cache-Control: no-store, no-cache, must-revalidate, proxy-revalidate');
+header('Pragma: no-cache');
+header('Expires: 0');
+header('Surrogate-Control: no-store');
+
+// Force reload detection
+$force = $_GET['force'] ?? '';
+if ($force === '1') {
+    $_SESSION['_force_reload'] = time();
+}
+
 require_once 'includes/auth.php';
 requireAuth();
 
@@ -9,9 +29,33 @@ $action = $_GET['action'] ?? 'list';
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajax_update_stage'])) {
     header('Content-Type: application/json');
     
+    global $pdo;
+    
+    error_log("AJAX stage update called - Session user_id: " . ($_SESSION['user_id'] ?? 'none'));
+    
+    if (!isset($_POST['csrf_token']) || !verifyCsrf($_POST['csrf_token'])) {
+        error_log("CSRF validation failed");
+        echo json_encode(['success' => false, 'error' => 'Token de segurança inválido']);
+        exit;
+    }
+    
     try {
         $deal_id = intval($_POST['deal_id']);
         $stage_id = intval($_POST['stage_id']);
+        
+        // Debug output
+        error_log("DEBUG: Starting update for deal_id=$deal_id, stage_id=$stage_id");
+        
+        // Check session
+        if (empty($_SESSION['user_id'])) {
+            error_log("DEBUG: No user_id in session!");
+        }
+        
+        // Get current deal info BEFORE update
+        $oldDeal = $pdo->prepare("SELECT * FROM deals WHERE id = ?");
+        $oldDeal->execute([$deal_id]);
+        $oldDeal = $oldDeal->fetch();
+        error_log("DEBUG: Current stage_id in DB: " . ($oldDeal['stage_id'] ?? 'NOT FOUND'));
 
         // Get stage info
         $stageStmt = $pdo->prepare("SELECT * FROM deal_stages WHERE id = ?");
@@ -39,15 +83,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajax_update_stage']))
             $stmt = $pdo->prepare("UPDATE deals SET stage_id = ?, status = ?, actual_close = NULL, updated_at = NOW() WHERE id = ?");
             $stmt->execute([$stage_id, $status, $deal_id]);
         }
+        
+        $affected = $stmt->rowCount();
+        error_log("Deal update: deal_id=$deal_id, stage_id=$stage_id, status=$status, rows_affected=$affected");
+        
+        // Verify update
+        $verify = $pdo->prepare("SELECT stage_id, status FROM deals WHERE id = ?");
+        $verify->execute([$deal_id]);
+        $newDeal = $verify->fetch();
+        error_log("Verification: new stage_id=" . $newDeal['stage_id'] . ", status=" . $newDeal['status']);
 
-        // Try to log activity, but don't fail if it doesn't work
-        try {
-            logActivity('status_change', "Negócio movido para " . $stage['name'], 'deal', $deal_id);
-        } catch (Exception $e) {
-            // Silent fail for activity logging
-        }
-
-        echo json_encode(['success' => true]);
+        echo json_encode(['success' => true, 'debug' => "Updated deal $deal_id to stage $stage_id, affected: $affected"]);
     } catch (Exception $e) {
         echo json_encode(['success' => false, 'error' => $e->getMessage()]);
     }
@@ -215,7 +261,7 @@ include 'includes/sidebar.php';
 
                 <div>
                     <label class="block text-sm font-medium text-slate-700 mb-1">Imóvel Associado</label>
-                    <select name="property_id" id="propertySelect" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-luxury-gold focus:ring-2 focus:ring-luxury-gold/20 outline-none transition-all bg-white" onchange="updatePropertyInfo()">
+                    <select name="property_id" id="propertySelect" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-luxury-gold focus:ring-2 focus:ring-luxury-gold/20 outline-none transition-all bg-white" onchange="updatePropertyInfoForm()">
                         <option value="">Selecionar imóvel...</option>
                         <optgroup label="Imóveis da Agência">
                         <?php foreach ($properties as $p): ?>
@@ -346,117 +392,50 @@ include 'includes/sidebar.php';
     </div>
 </div>
 
+<script src="js/kanban.js?v=20260502ext7"></script>
 <script>
-let draggedDealId = null;
-
-function drag(ev, dealId) {
-    draggedDealId = dealId;
-    ev.dataTransfer.setData("text/plain", dealId);
-    ev.target.style.opacity = '0.5';
-}
-
-function allowDrop(ev) {
+function dropWithRefresh(ev, stageId) {
     ev.preventDefault();
-}
-
-function dragEnter(ev) {
-    ev.preventDefault();
-    const col = ev.target.closest('.kanban-column');
-    if (col) col.classList.add('kanban-drag-over');
-}
-
-function dragLeave(ev) {
-    const col = ev.target.closest('.kanban-column');
-    if (col) col.classList.remove('kanban-drag-over');
-}
-
-function drop(ev, stageId) {
-    ev.preventDefault();
-    const col = ev.target.closest('.kanban-column');
-    if (col) col.classList.remove('kanban-drag-over');
-
-    const dealId = draggedDealId;
+    var col = ev.target.closest('.kanban-column');
+    if (!col) return;
+    col.classList.remove('kanban-drag-over');
+    
+    var dealId = window.draggedDealId;
     if (!dealId) return;
-
-    const card = document.getElementById('deal-' + dealId);
+    
+    var card = document.getElementById('deal-' + dealId);
+    var oldColumn = card ? card.parentElement : null;
+    
     if (card) {
         card.style.opacity = '1';
-        card.classList.add('updating');
-        // Move visually immediately for responsiveness
         col.appendChild(card);
     }
-
-    // Send AJAX update
-    const formData = new FormData();
-    formData.append('ajax_update_stage', '1');
+    
+    var formData = new FormData();
     formData.append('deal_id', dealId);
     formData.append('stage_id', stageId);
     
-    // Get CSRF token from global input
-    const csrfToken = document.getElementById('global-csrf-token');
-    if (csrfToken) {
-        formData.append('csrf_token', csrfToken.value);
-    }
-
-    fetch('deals.php', {
-        method: 'POST',
-        body: formData
-    })
-    .then(r => r.json())
-    .then(data => {
-        if (card) card.classList.remove('updating');
+    fetch('api/kanban.php', { method: 'POST', body: formData })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+        console.log('Updated:', data.success);
+        // Auto refresh after successful update
         if (data.success) {
-            // Visual feedback
-            if (card) {
-                card.classList.add('flash-success');
-                setTimeout(() => card.classList.remove('flash-success'), 1000);
-            }
-            console.log('Deal updated successfully');
-        } else {
-            console.error('Error:', data.error);
-            alert('Erro ao atualizar: ' + (data.error || 'Tente novamente'));
-            // Reload to restore correct state
-            setTimeout(() => location.reload(), 500);
+            setTimeout(function() {
+                location.reload();
+            }, 500);
         }
     })
-    .catch((err) => {
-        console.error('Network error:', err);
-        if (card) card.classList.remove('updating');
-        setTimeout(() => location.reload(), 500);
+    .catch(function(err) { 
+        console.error('Error:', err); 
     });
 }
 
-document.querySelectorAll('.kanban-card').forEach(card => {
-    card.addEventListener('dragend', () => {
-        card.style.opacity = '1';
-    });
-});
-
-function updatePropertyInfo() {
-    const select = document.getElementById('propertySelect');
-    const valueInput = document.querySelector('input[name="value"]');
-    const externalFields = document.getElementById('externalPropertyFields');
-    
-    const selectedOption = select.options[select.selectedIndex];
-    const price = selectedOption.getAttribute('data-price');
-    
-    if (select.value === 'external') {
-        externalFields.classList.remove('hidden');
-        if (valueInput) valueInput.value = '';
-    } else if (select.value && select.value !== 'external') {
-        externalFields.classList.add('hidden');
-        if (price && price > 0 && valueInput) {
-            valueInput.value = price;
-        }
-    } else {
-        externalFields.classList.add('hidden');
-    }
-}
-
-// Auto-fill on page load if property is already selected
-document.addEventListener('DOMContentLoaded', function() {
-    updatePropertyInfo();
-});
+// Override drop
+window.drop = dropWithRefresh;
+console.log('Auto-refresh enabled');
+</script>
+<?php endif; ?>
 </script>
 <?php endif; ?>
 
