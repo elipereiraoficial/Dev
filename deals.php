@@ -194,19 +194,7 @@ if (isset($_GET['delete'])) {
 // Fetch data
 $stages = getStages();
 $clients = $pdo->query("SELECT id, name FROM clients ORDER BY name ASC")->fetchAll();
-$properties = $pdo->query("
-    SELECT p.id, p.title, p.price 
-    FROM properties p 
-    WHERE p.status != 'sold'
-    AND p.id NOT IN (
-        SELECT d.property_id FROM deals d 
-        JOIN deal_stages s ON d.stage_id = s.id 
-        WHERE d.property_id IS NOT NULL 
-        AND d.status NOT IN ('lost') 
-        AND s.stage_order >= 5
-    )
-    ORDER BY p.title ASC
-")->fetchAll();
+$properties = $pdo->query("SELECT id, title, price FROM properties WHERE status != 'sold' ORDER BY title ASC")->fetchAll();
 
 // Fetch deals with related info - filtrar por status
 $whereClause = "1=1";
@@ -446,7 +434,4 @@ window.drop = dropWithRefresh;
 console.log('Auto-refresh enabled');
 </script>
 <?php endif; ?>
-</script>
-<?php endif; ?>
-
 <?php include 'includes/footer.php'; ?>
