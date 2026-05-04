@@ -18,8 +18,9 @@
 ---
 
 ## 🏗️ Build Info
-- **Last deploy test**: 2025-05-04
-- **Auto-deploy**: FTP GitHub Actions configured
+- **Last deploy test**: 04/05/2026
+- **Auto-deploy**: ✅ FTP GitHub Actions working
+- **FTP Status**: Working - Automatic deploy on every push
 
 ---
 
@@ -28,16 +29,18 @@
 - **Domain**: https://crm.elipereira.com
 - **Database**: MySQL (Hostinger)
 - **Status**: ✅ Fully deployed and working with test data
-- **Kanban**: Auto-refresh after drag & drop implemented
+- **FTP Deploy**: ✅ Working - Auto-deploy on push
+- **Last Update**: 04/05/2026
 
 ---
 
 ## 🔧 Recent Fixes
 
-### 2026-05-04 - FTP Deploy Workflow
-- Added GitHub Actions workflow for automatic FTP deployment
+### 2026-05-04 - FTP Deploy Working ✅
+- GitHub Actions FTP deploy now working correctly
+- Automatic deployment on every push to master
 - Workflow file: `.github/workflows/deploy.yml`
-- Requires FTP secrets to be configured in GitHub
+- FTP credentials configured in GitHub secrets
 
 ### 2026-05-04 - Kanban Auto-Refresh
 - Added automatic page refresh (500ms) after dropping a card in kanban
@@ -363,14 +366,10 @@ luxury-crm/
 
 ## 📅 Last Update
 
-**02/05/2026** - Complete system with:
-- 10 users seeded
-- 5 properties seeded
-- 8 clients seeded
-- 9 deals (all pipeline stages) seeded
-- 5 tasks seeded
-- 6 activities seeded
-- Code cleanup completed
+**04/05/2026** - FTP Deploy Test ✅
+- FTP auto-deploy configured and working
+- Testing auto-deploy now
+- All previous features working
 
 ---
 
