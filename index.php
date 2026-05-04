@@ -6,7 +6,7 @@ $page = 'Dashboard';
 
 // Stats
 $totalDeals = $pdo->query("SELECT COUNT(*) FROM deals WHERE status != 'lost'")->fetchColumn() ?: 0;
-$wonDeals = $pdo->query("SELECT COUNT(*) FROM deals WHERE status = 'won' AND MONTH(actual_close) = MONTH(CURDATE()) AND YEAR(actual_close) = YEAR(CURDATE())")->fetchColumn() ?: 0;
+$wonDeals = $pdo->query("SELECT COUNT(*) FROM deals WHERE status = 'won' OR stage_id = 7")->fetchColumn() ?: 0;
 $totalProps = $pdo->query("SELECT COUNT(*) FROM properties WHERE status = 'available'")->fetchColumn() ?: 0;
 $totalClients = $pdo->query("SELECT COUNT(*) FROM clients WHERE status = 'active'")->fetchColumn() ?: 0;
 $pipelineValue = $pdo->query("SELECT COALESCE(SUM(value), 0) FROM deals WHERE status = 'open'")->fetchColumn() ?: 0;
@@ -75,7 +75,7 @@ include 'includes/sidebar.php';
             <div class="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center">
                 <i class="fas fa-trophy text-emerald-600 text-lg"></i>
             </div>
-            <span class="text-xs font-medium text-slate-500 bg-slate-100 px-2 py-1 rounded-full">Este Mês</span>
+            <span class="text-xs font-medium text-slate-500 bg-slate-100 px-2 py-1 rounded-full">Total</span>
         </div>
         <h3 class="text-2xl font-bold text-luxury-900"><?php echo $wonDeals; ?></h3>
         <p class="text-sm text-slate-500 mt-1">Fechados Ganho</p>

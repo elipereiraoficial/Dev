@@ -22,8 +22,9 @@ if ($force === '1') {
 require_once 'includes/auth.php';
 requireAuth();
 
-$page = 'Pipeline Kanban';
+$page = 'Negocios';
 $action = $_GET['action'] ?? 'list';
+$filter = $_GET['filter'] ?? 'all';
 
 // Handle AJAX stage update
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajax_update_stage'])) {
@@ -207,13 +208,22 @@ $properties = $pdo->query("
     ORDER BY p.title ASC
 ")->fetchAll();
 
-// Fetch deals with related info
+// Fetch deals with related info - filtrar por status
+$whereClause = "1=1";
+if ($filter === 'won') {
+    $whereClause = "d.status = 'won' OR d.stage_id = 7";
+} elseif ($filter === 'lost') {
+    $whereClause = "d.status = 'lost' OR d.stage_id = 8";
+} elseif ($filter === 'open') {
+    $whereClause = "d.status = 'open'";
+}
+
 $dealsData = $pdo->query("
     SELECT d.*, c.name as client_name, p.title as property_title, p.address as property_address
     FROM deals d
     LEFT JOIN clients c ON d.client_id = c.id
     LEFT JOIN properties p ON d.property_id = p.id
-    WHERE d.status != 'lost' OR (d.status = 'lost' AND d.updated_at > DATE_SUB(NOW(), INTERVAL 30 DAY))
+    WHERE $whereClause
     ORDER BY d.updated_at DESC
 ")->fetchAll();
 
