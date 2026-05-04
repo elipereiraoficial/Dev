@@ -17,11 +17,27 @@
 
 ---
 
+## 🏗️ Build Info
+- **Last deploy test**: 2025-05-04
+- **Auto-deploy**:Webhook active
+
+---
+
 ## 🚀 Current Status
 
 - **Domain**: https://crm.elipereira.com
 - **Database**: MySQL (Hostinger)
 - **Status**: ✅ Fully deployed and working with test data
+- **Kanban**: Auto-refresh after drag & drop implemented
+
+---
+
+## 🔧 Recent Fixes
+
+### 2026-05-04 - Kanban Auto-Refresh
+- Added automatic page refresh (500ms) after dropping a card in kanban
+- Solves issue where column counts weren't updating in real-time
+- Backend was already working correctly (confirmed by F5 refresh)
 
 ---
 
