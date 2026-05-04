@@ -368,16 +368,15 @@ luxury-crm/
 
 ## 📅 Last Update
 
-**04/05/2026** - Auditoria Completa Final ✅
+**04/05/2026** - Auditoria Completa ✅
 - kanban.php: Fixed page title to "Pipeline Kanban", includes sidebar
 - index.php: Dashboard shows all 8 stages, wonDeals KPI shows total
 - deals.php: Added filter support (won/lost/open)
-- seed.php: 2025-008 now in "Fechado Ganho" stage (stage_id=7)
 - sidebar.php: All 8 menu links verified
-- All modules (clients, properties, tasks, activities, calendar, settings) have sidebar
-- api/kanban.php: Used for drag-drop updates
-- All links verified - no broken references
-- Removed old pipeline.php (redundant, using kanban.php)
+- All modules have sidebar included
+- Removed old pipeline.php (redundant)
+- Database fix: Deal 2025-008 updated to stage_id=7 (Fechado Ganho)
+- GitHub Actions deploy working perfectly to Hostinger
 
 ---
 
