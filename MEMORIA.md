@@ -19,7 +19,7 @@
 
 ## 🏗️ Build Info
 - **Last deploy test**: 2025-05-04
-- **Auto-deploy**:Webhook active
+- **Auto-deploy**: FTP GitHub Actions configured
 
 ---
 
