@@ -147,12 +147,12 @@ function seedTestDataIfNeeded() {
             ('Tiago Almeida', 'tiago.almeida@luxury.pt', '$password', 'vendas', 1, NOW()),
             ('Carla Sousa', 'carla.sousa@luxury.pt', '$password', 'vendas', 1, NOW())");
         
-        $pdo->exec("INSERT INTO properties (title, type, location, price, status, description, created_at) VALUES 
-            ('Apartamento T2 Centro', 'apartment', 'Lisboa', 450000, 'available', 'Apartamento T2 no centro de Lisboa', NOW()),
-            ('Moradia Moderna Cascais', 'house', 'Cascais', 1250000, 'available', 'Moradia moderna com piscina', NOW()),
-            ('Loft Industrial Alfama', 'apartment', 'Lisboa', 380000, 'available', 'Loft industrial renovado', NOW()),
-            ('Penthouse Vista Rio', 'apartment', 'Porto', 890000, 'reserved', 'Penthouse de luxo', NOW()),
-            ('Quinta com Vinha Douro', 'land', 'Douro', 2500000, 'available', 'Quinta histórica com vinha', NOW())");
+        $pdo->exec("INSERT INTO properties (reference, title, type, address, city, region, price, status, description, bedrooms, bathrooms, area_m2, featured, created_at) VALUES 
+            ('LIS-001', 'Apartamento T2 Centro', 'apartment', 'Prça do Rossio, 25', 'Lisboa', 'Lisboa', 450000, 'available', 'Apartamento T2 no centro de Lisboa', 2, 1, 85, 1, NOW()),
+            ('CAS-001', 'Moradia Moderna Cascais', 'house', 'Rua da Praia, 45', 'Cascais', 'Lisboa', 1250000, 'available', 'Moradia moderna com piscina', 4, 3, 250, 1, NOW()),
+            ('LIS-003', 'Loft Industrial Alfama', 'apartment', 'Rua de Santa Cruz, 12', 'Lisboa', 'Lisboa', 380000, 'available', 'Loft industrial renovado', 1, 1, 65, 0, NOW()),
+            ('POR-001', 'Penthouse Vista Rio', 'apartment', 'Av. da Boavista, 500', 'Porto', 'Porto', 890000, 'reserved', 'Penthouse de luxo', 3, 2, 150, 1, NOW()),
+            ('DOU-001', 'Quinta com Vinha Douro', 'land', 'Estrada Nacional 222', 'Douro', 'Norte', 2500000, 'available', 'Quinta histórica com vinha', 0, 0, 5000, 0, NOW())");
         
         $pdo->exec("INSERT INTO clients (name, email, phone, status, source, created_at) VALUES 
             ('Carlos Silva', 'carlos.silva@email.pt', '+351 912 345 678', 'active', 'website', NOW()),
