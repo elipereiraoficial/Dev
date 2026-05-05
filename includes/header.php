@@ -64,6 +64,10 @@ $flash = getFlash();
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: #f1f1f1; }
         ::-webkit-scrollbar-thumb { background: #d4af37; border-radius: 3px; }
+        
+        /* Form Inputs - Golden Border */
+        input[type="text"], input[type="email"], input[type="tel"], input[type="number"], input[type="password"], input[type="date"], input[type="search"], textarea, select { border: 1px solid #c9a227 !important; }
+        input:focus, textarea:focus, select:focus { border-color: #d4af37 !important; box-shadow: 0 0 0 3px rgba(212,175,55,0.2); outline: none; }
     </style>
 </head>
 <body class="bg-luxury-cream text-slate-800">
