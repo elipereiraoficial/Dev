@@ -71,6 +71,28 @@ if (isset($_GET['delete'])) {
     exit;
 }
 
+// Image actions (AJAX)
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
+    if (!isset($_POST['csrf_token']) || !verifyCsrf($_POST['csrf_token'])) {
+        echo json_encode(['success' => false, 'error' => 'Token inválido']);
+        exit;
+    }
+    
+    if ($_POST['action'] === 'delete_image' && isset($_POST['image_id'])) {
+        $img_id = intval($_POST['image_id']);
+        deletePropertyImage($img_id);
+        echo json_encode(['success' => true]);
+        exit;
+    }
+    
+    if ($_POST['action'] === 'set_primary_image' && isset($_POST['image_id'])) {
+        $img_id = intval($_POST['image_id']);
+        setPropertyPrimaryImage($img_id);
+        echo json_encode(['success' => true]);
+        exit;
+    }
+}
+
 // Fetch
 $search = clean($_GET['search'] ?? '');
 $sql = "SELECT p.*, c.name as owner_name, u.name as agent_name FROM properties p LEFT JOIN clients c ON p.owner_id = c.id LEFT JOIN users u ON p.agent_id = u.id WHERE 1=1";
@@ -237,6 +259,7 @@ include 'includes/sidebar.php';
         <table class="w-full text-sm">
             <thead class="bg-slate-50 text-slate-500">
                 <tr>
+                    <th class="text-left px-6 py-3 font-medium">Imagem</th>
                     <th class="text-left px-6 py-3 font-medium">Referência</th>
                     <th class="text-left px-6 py-3 font-medium">Título</th>
                     <th class="text-left px-6 py-3 font-medium">Localização</th>
@@ -247,8 +270,17 @@ include 'includes/sidebar.php';
                 </tr>
             </thead>
             <tbody class="divide-y divide-slate-100">
-                <?php foreach ($properties as $p): ?>
+                <?php foreach ($properties as $p): 
+                $primaryImg = getPropertyPrimaryImage($p['id']);
+                ?>
                 <tr class="hover:bg-slate-50/50 transition-colors">
+                    <td class="px-6 py-3">
+                        <?php if ($primaryImg): ?>
+                        <img src="<?php echo $primaryImg['file_path']; ?>" class="w-12 h-12 object-cover rounded-lg">
+                        <?php else: ?>
+                        <div class="w-12 h-12 bg-slate-100 rounded-lg flex items-center justify-center"><i class="fas fa-home text-slate-300"></i></div>
+                        <?php endif; ?>
+                    </td>
                     <td class="px-6 py-3 font-medium text-luxury-gold"><?php echo clean($p['reference']); ?></td>
                     <td class="px-6 py-3">
                         <div class="flex items-center gap-2">

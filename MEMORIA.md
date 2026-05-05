@@ -47,6 +47,17 @@
 - Solves issue where column counts weren't updating in real-time
 - Backend was already working correctly (confirmed by F5 refresh)
 
+### 2026-05-04 - Deals.php Syntax Error ✅
+- Fixed: syntax error - missing `endif` at line 437
+- Error caused 500 error on deals.php page
+- Simple fix: added closing `<?php endif; ?>`
+
+### 2026-05-04 - Kanban Drag & Drop Fixed ✅
+- Fixed: api/kanban.php include path was incorrect
+- Changed: `require_once __DIR__ . '/includes/auth.php'` → `require_once __DIR__ . '/../includes/auth.php'`
+- Added debug logging for troubleshooting
+- Drag & drop now persists after page refresh (F5)
+
 ---
 
 ## 👥 Users Created
@@ -368,7 +379,7 @@ luxury-crm/
 
 ## 📅 Last Update
 
-**04/05/2026** - Auditoria Completa ✅
+**04/05/2026** - Sistema Completo ✅
 - kanban.php: Fixed page title to "Pipeline Kanban", includes sidebar
 - index.php: Dashboard shows all 8 stages, wonDeals KPI shows total
 - deals.php: Added filter support (won/lost/open)
@@ -377,6 +388,9 @@ luxury-crm/
 - Removed old pipeline.php (redundant)
 - Database fix: Deal 2025-008 updated to stage_id=7 (Fechado Ganho)
 - GitHub Actions deploy working perfectly to Hostinger
+- **FIXED**: deals.php 500 error (syntax error - missing endif)
+- **FIXED**: Kanban drag & drop persistence (api/kanban.php path fix)
+- Sistema 100% operacional!
 
 ---
 

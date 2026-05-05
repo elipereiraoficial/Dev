@@ -2,7 +2,7 @@
 
 <p align="center">
   <img src="https://img.shields.io/badge/PHP-8.2+-blue.svg" alt="PHP Version">
-  <img src="https://img.shields.io/badge/PostgreSQL-Supabase-green.svg" alt="Database">
+  <img src="https://img.shields.io/badge/MySQL-Hostinger-green.svg" alt="Database">
   <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License">
   <img src="https://img.shields.io/badge/Version-1.0.0-purple.svg" alt="Version">
 </p>
@@ -69,9 +69,9 @@ This project was developed with a focus on usability, performance, and premium d
 | Category | Technology |
 |-----------|------------|
 | **Backend** | PHP 8.2 |
-| **Database** | PostgreSQL (Supabase) |
+| **Database** | MySQL (Hostinger) |
 | **Frontend** | HTML5, Tailwind CSS |
-| **Server** | XAMPP (Apache) |
+| **Server** | Apache (Hostinger) |
 | **Authentication** | Session-based with CSRF Protection |
 
 ---

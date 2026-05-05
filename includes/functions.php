@@ -421,3 +421,53 @@ function getAutomationStats() {
     
     return $stats;
 }
+
+// Property Images
+function getPropertyImages($property_id) {
+    global $pdo;
+    $stmt = $pdo->prepare("SELECT * FROM property_images WHERE property_id = ? ORDER BY is_primary DESC, sort_order ASC, created_at ASC");
+    $stmt->execute([$property_id]);
+    return $stmt->fetchAll();
+}
+
+function getPropertyPrimaryImage($property_id) {
+    global $pdo;
+    $stmt = $pdo->prepare("SELECT * FROM property_images WHERE property_id = ? AND is_primary = 1 LIMIT 1");
+    $stmt->execute([$property_id]);
+    $img = $stmt->fetch();
+    if (!$img) {
+        $stmt = $pdo->prepare("SELECT * FROM property_images WHERE property_id = ? ORDER BY created_at ASC LIMIT 1");
+        $stmt->execute([$property_id]);
+        $img = $stmt->fetch();
+    }
+    return $img;
+}
+
+function deletePropertyImage($image_id) {
+    global $pdo;
+    $stmt = $pdo->prepare("SELECT * FROM property_images WHERE id = ?");
+    $stmt->execute([$image_id]);
+    $img = $stmt->fetch();
+    if ($img) {
+        $file_path = __DIR__ . '/../' . $img['file_path'];
+        if (file_exists($file_path)) {
+            unlink($file_path);
+        }
+        $pdo->prepare("DELETE FROM property_images WHERE id = ?")->execute([$image_id]);
+        return true;
+    }
+    return false;
+}
+
+function setPropertyPrimaryImage($image_id) {
+    global $pdo;
+    $stmt = $pdo->prepare("SELECT property_id FROM property_images WHERE id = ?");
+    $stmt->execute([$image_id]);
+    $img = $stmt->fetch();
+    if ($img) {
+        $pdo->prepare("UPDATE property_images SET is_primary = 0 WHERE property_id = ?")->execute([$img['property_id']]);
+        $pdo->prepare("UPDATE property_images SET is_primary = 1 WHERE id = ?")->execute([$image_id]);
+        return true;
+    }
+    return false;
+}
