@@ -379,7 +379,7 @@ luxury-crm/
 
 ## 📅 Last Update
 
-**04/05/2026** - Sistema Completo ✅
+**05/05/2026** - Sistema Completo ✅
 - kanban.php: Fixed page title to "Pipeline Kanban", includes sidebar
 - index.php: Dashboard shows all 8 stages, wonDeals KPI shows total
 - deals.php: Added filter support (won/lost/open)
@@ -390,6 +390,7 @@ luxury-crm/
 - GitHub Actions deploy working perfectly to Hostinger
 - **FIXED**: deals.php 500 error (syntax error - missing endif)
 - **FIXED**: Kanban drag & drop persistence (api/kanban.php path fix)
+- **NEW**: Property Images Gallery - upload, gallery, primary image, delete
 - Sistema 100% operacional!
 
 ---
