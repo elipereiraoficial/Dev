@@ -110,4 +110,7 @@ Este sistema de agents pode ser usado para:
 
 ---
 
-**Last Updated:** 05/05/2026 - Sistema 100% operacional com Galeria de Imagens
+**Last Updated:** 05/05/2026 - Sistema 100% operacional com:
+- Galeria de Imóveis (upload, delete, primary)
+- styling de inputs (bordas douradas)
+- Scripts de seed (apply_seed.php)

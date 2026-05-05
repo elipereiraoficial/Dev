@@ -97,6 +97,8 @@ echo "⚠️ LEMBRETE: Atualizou o MEMORIA.md?"
 
 ---
 
-**Última atualização:** 04/05/2026
+**Última atualização:** 05/05/2026
 **FTP Deploy:** ✅ Working - Auto-deploy on push
-**Sistema:** ✅ 100% operacional
+**Sistema:** ✅ 100% operacional com:
+- Galeria de Imóveis (upload, delete, primary)
+- styling de inputs (bordas douradas #c9a227)
