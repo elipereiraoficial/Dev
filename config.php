@@ -16,11 +16,24 @@ if (file_exists(__DIR__ . '/.env')) {
 
 // Database credentials - read from environment where possible.
 // IMPORTANT: move real credentials to environment variables or a non-tracked .env file.
-define('DB_HOST', getenv('DB_HOST') ?: 'localhost');
-define('DB_PORT', getenv('DB_PORT') ?: '3306');
-define('DB_NAME', getenv('DB_NAME') ?: 'luxury_crm');
-define('DB_USER', getenv('DB_USER') ?: 'change_me');
-define('DB_PASS', isset($_ENV['DB_PASS']) ? $_ENV['DB_PASS'] : (getenv('DB_PASS') ?: 'change_me'));
+// For production (Hostinger), set these as PHP environment variables in the panel.
+$isProduction = isset($_SERVER['HTTP_HOST']) && strpos($_SERVER['HTTP_HOST'], 'elipereira.com') !== false;
+
+if ($isProduction) {
+    // Production: use environment variables or panel settings
+    define('DB_HOST', getenv('DB_HOST') ?: 'localhost');
+    define('DB_PORT', getenv('DB_PORT') ?: '3306');
+    define('DB_NAME', getenv('DB_NAME') ?: 'u415107443_luxury_crm');
+    define('DB_USER', getenv('DB_USER') ?: 'u415107443');
+    define('DB_PASS', getenv('DB_PASS') ?: '');
+} else {
+    // Development: use .env file
+    define('DB_HOST', getenv('DB_HOST') ?: 'localhost');
+    define('DB_PORT', getenv('DB_PORT') ?: '3306');
+    define('DB_NAME', getenv('DB_NAME') ?: 'luxury_crm');
+    define('DB_USER', getenv('DB_USER') ?: 'root');
+    define('DB_PASS', isset($_ENV['DB_PASS']) ? $_ENV['DB_PASS'] : '');
+}
 
 // Application Settings
 define('APP_NAME', 'Luxury Estate CRM');
