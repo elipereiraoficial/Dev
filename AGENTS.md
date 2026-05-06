@@ -98,6 +98,17 @@ Atualize a documentação com as mudanças feitas
 - **Repo:** https://github.com/elipereiraoficial/Dev
 - **Stack:** PHP 8.2, MySQL, TailwindCSS
 
+## ⚠️ REGRA OBRIGATÓRIA - Deploy
+
+**SEMPRE que houver qualquer alteração no código, executar:**
+1. `git add -A`
+2. `git commit -m "mensagem"`
+3. `git push`
+
+O deploy para Hostinger é AUTOMÁTICO via GitHub Actions após cada push.
+
+**NUNCA fazer alterações manuais na Hostinger** - todas as mudanças devem ser feitas via código e commit.
+
 ---
 
 ## 🚀 Future Projects

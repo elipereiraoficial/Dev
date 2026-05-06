@@ -18,9 +18,20 @@
 ---
 
 ## 🏗️ Build Info
-- **Last deploy test**: 04/05/2026
+- **Last deploy test**: 06/05/2026
 - **Auto-deploy**: ✅ FTP GitHub Actions working
 - **FTP Status**: Working - Automatic deploy on every push
+
+## ⚠️ REGRA OBRIGATÓRIA - Deploy
+
+**SEMPRE que houver qualquer alteração no código:**
+1. `git add -A`
+2. `git commit -m "mensagem"`
+3. `git push`
+
+O deploy para Hostinger é AUTOMÁTICO via GitHub Actions após cada push.
+
+**NUNCA fazer alterações manuais na Hostinger** - todas as mudanças devem ser feitas via código e commit.
 
 ---
 
