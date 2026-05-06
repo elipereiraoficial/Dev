@@ -2,13 +2,25 @@
 // Luxury Real Estate CRM - Configuration
 // MySQL Connection (Hostinger)
 
+// Load .env file if exists
+if (file_exists(__DIR__ . '/.env')) {
+    $lines = file(__DIR__ . '/.env', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    foreach ($lines as $line) {
+        if (strpos($line, '#') === 0) continue;
+        if (strpos($line, '=') === false) continue;
+        list($key, $value) = explode('=', $line, 2);
+        $_ENV[trim($key)] = trim($value);
+        putenv(trim($key) . '=' . trim($value));
+    }
+}
+
 // Database credentials - read from environment where possible.
 // IMPORTANT: move real credentials to environment variables or a non-tracked .env file.
 define('DB_HOST', getenv('DB_HOST') ?: 'localhost');
 define('DB_PORT', getenv('DB_PORT') ?: '3306');
 define('DB_NAME', getenv('DB_NAME') ?: 'luxury_crm');
 define('DB_USER', getenv('DB_USER') ?: 'change_me');
-define('DB_PASS', getenv('DB_PASS') ?: 'change_me');
+define('DB_PASS', isset($_ENV['DB_PASS']) ? $_ENV['DB_PASS'] : (getenv('DB_PASS') ?: 'change_me'));
 
 // Application Settings
 define('APP_NAME', 'Luxury Estate CRM');
