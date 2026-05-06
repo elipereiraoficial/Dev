@@ -1,9 +1,8 @@
 <?php
 /**
- * AUTO DEPLOY - Pull from GitHub
- * Run: https://crm.elipereira.com/scripts/auto_deploy.php
- * 
- * Note: Requires Git to be installed on server
+ * AUTO DEPLOY - Pull from GitHub (Hardened)
+ * Run: https://crm.elipereira.com/scripts/auto_deploy.php?secret=...
+ * Note: Requires Git to be installed on server and DEPLOY_SECRET configured.
  */
 
 require_once __DIR__ . '/../../config.php';
@@ -11,66 +10,83 @@ require_once __DIR__ . '/../../config.php';
 header('Content-Type: text/plain');
 header('Cache-Control: no-cache');
 
-echo "=== 🚀 AUTO DEPLOY ===\n\n";
+echo "=== AUTO DEPLOY ===\n\n";
 
-// Security check - only allow from authorized IPs or with secret key
+// Security check - use DEPLOY_SECRET from config or environment
 $secret = $_GET['secret'] ?? '';
-$allowedSecret = 'deploy2026'; // Change this to a secure secret
-
-if ($secret !== $allowedSecret) {
-    echo "❌ Access denied. Use ?secret=your_secret\n";
+if (defined('DEPLOY_SECRET') && DEPLOY_SECRET) {
+    if ($secret !== DEPLOY_SECRET) {
+        echo "Access denied. Invalid secret provided.\n";
+        exit;
+    }
+} else {
+    // If no secret configured, deny access to prevent accidental public deploys
+    echo "Access denied. Deploy secret not configured on server.\n";
     exit;
 }
 
-// Check if git is available
-$gitCheck = shell_exec('git --version');
-if (!$gitCheck) {
-    echo "❌ Git not available on server\n";
+// Check if git is available (use exec with escapeshellcmd)
+$gitBinary = 'git';
+$git_output = [];
+$git_return = 1;
+exec(escapeshellcmd($gitBinary) . ' --version 2>&1', $git_output, $git_return);
+if ($git_return !== 0) {
+    echo "Git not available on server\n";
     echo "Please deploy manually via Hostinger Git panel\n";
     exit;
 }
 
-echo "Git version: " . trim($gitCheck) . "\n\n";
+echo "Git version: " . trim(implode("\n", $git_output)) . "\n\n";
 
-// Navigate to web root
-$webRoot = __DIR__ . '/../../';
-
-// Check if it's a git repo
-if (!is_dir($webRoot . '/.git')) {
-    echo "❌ Not a git repository\n";
+// Resolve and validate web root
+$webRoot = realpath(__DIR__ . '/../../');
+if ($webRoot === false || !is_dir($webRoot)) {
+    echo "Web root not found\n";
     exit;
 }
 
-echo "Current branch: " . trim(shell_exec('cd ' . $webRoot . ' && git branch --show-current')) . "\n";
-echo "Last commit: " . trim(shell_exec('cd ' . $webRoot . ' && git log -1 --oneline')) . "\n\n";
+// Check if it's a git repo
+if (!is_dir($webRoot . '/.git')) {
+    echo "Not a git repository\n";
+    exit;
+}
+
+// Run git commands safely
+exec('cd ' . escapeshellarg($webRoot) . ' && git branch --show-current 2>&1', $branch_out);
+exec('cd ' . escapeshellarg($webRoot) . ' && git log -1 --oneline 2>&1', $commit_out);
+echo "Current branch: " . trim(implode('\n', $branch_out)) . "\n";
+echo "Last commit: " . trim(implode('\n', $commit_out)) . "\n\n";
 
 // Fetch latest from remote
 echo "1. Fetching from GitHub...\n";
-$fetch = shell_exec('cd ' . $webRoot . ' && git fetch origin 2>&1');
-echo $fetch . "\n";
+exec('cd ' . escapeshellarg($webRoot) . ' && git fetch origin 2>&1', $fetch_out, $fetch_ret);
+echo implode('\n', $fetch_out) . "\n";
 
 // Check if there are updates
-$status = shell_exec('cd ' . $webRoot . ' && git status --porcelain');
+exec('cd ' . escapeshellarg($webRoot) . ' && git status --porcelain 2>&1', $status_out);
+$status = trim(implode('\n', $status_out));
 
-if (empty(trim($status))) {
-    echo "✅ Already up to date!\n";
-    echo "Last deployed: " . trim(shell_exec('cd ' . $webRoot . ' && git log -1 --format="%Y-%m-%H %H:%M"')) . "\n";
+if ($status === '') {
+    echo "Already up to date!\n";
+    exec('cd ' . escapeshellarg($webRoot) . ' && git log -1 --format="%Y-%m-%d %H:%M" 2>&1', $last_out);
+    echo "Last deployed: " . trim(implode('\n', $last_out)) . "\n";
     exit;
 }
 
 echo "2. New commits available. Pulling...\n";
-$pull = shell_exec('cd ' . $webRoot . ' && git pull origin master 2>&1');
-echo $pull . "\n";
+exec('cd ' . escapeshellarg($webRoot) . ' && git pull origin master 2>&1', $pull_out, $pull_ret);
+echo implode('\n', $pull_out) . "\n";
 
 // Verify
-$newCommit = trim(shell_exec('cd ' . $webRoot . ' && git log -1 --oneline'));
-echo "\n✅ Deployed to: $newCommit\n";
+exec('cd ' . escapeshellarg($webRoot) . ' && git log -1 --oneline 2>&1', $new_out);
+$newCommit = trim(implode('\n', $new_out));
+echo "\nDeployed to: $newCommit\n";
 
 // Clear PHP OPcache if available
 if (function_exists('opcache_get_status')) {
-    opcache_reset();
-    echo "✅ OPcache cleared\n";
+    @opcache_reset();
+    echo "OPcache cleared\n";
 }
 
-echo "\n=== ✅ DEPLOY COMPLETE ===\n";
+echo "\n=== DEPLOY COMPLETE ===\n";
 echo "Time: " . date('Y-m-d H:i:s') . "\n";

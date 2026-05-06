@@ -108,9 +108,12 @@ function login($email, $password) {
         
         // Audit login success
         auditLogin(true);
-        
-        seedTestDataIfNeeded();
-        
+
+        // Seed test data only if explicitly enabled via env var (to avoid accidental data injection in production)
+        if (getenv('ALLOW_DB_SEEDING') === '1') {
+            seedTestDataIfNeeded();
+        }
+
         return true;
     }
     
@@ -134,7 +137,8 @@ function seedTestDataIfNeeded() {
         $userCount = $pdo->query("SELECT COUNT(*) FROM users WHERE id > 1")->fetchColumn();
         if ($userCount > 0) return;
         
-        $password = password_hash('123456', PASSWORD_DEFAULT);
+        // Use a generated secure password placeholder for seeded users. Instruct admins to change.
+        $password = password_hash(bin2hex(random_bytes(8)), PASSWORD_DEFAULT);
         
         $pdo->exec("INSERT INTO users (name, email, password, role, active, created_at) VALUES 
             ('Maria Santos', 'maria.santos@luxury.pt', '$password', 'vendas', 1, NOW()),

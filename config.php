@@ -2,12 +2,13 @@
 // Luxury Real Estate CRM - Configuration
 // MySQL Connection (Hostinger)
 
-// Database credentials
-define('DB_HOST', 'localhost');
-define('DB_PORT', '3306');
-define('DB_NAME', 'u415107443_luxury_crm');
-define('DB_USER', 'u415107443_luxury_user');
-define('DB_PASS', 'Cadu5540!!');
+// Database credentials - read from environment where possible.
+// IMPORTANT: move real credentials to environment variables or a non-tracked .env file.
+define('DB_HOST', getenv('DB_HOST') ?: 'localhost');
+define('DB_PORT', getenv('DB_PORT') ?: '3306');
+define('DB_NAME', getenv('DB_NAME') ?: 'luxury_crm');
+define('DB_USER', getenv('DB_USER') ?: 'change_me');
+define('DB_PASS', getenv('DB_PASS') ?: 'change_me');
 
 // Application Settings
 define('APP_NAME', 'Luxury Estate CRM');
@@ -22,6 +23,9 @@ define('CSRF_TOKEN_NAME', 'csrf_token');
 define('LOGIN_ATTEMPTS_MAX', 5);
 define('LOGIN_ATTEMPTS_WINDOW', 900);
 
+// Deploy secret (do NOT commit real secrets to repo - use env variables)
+define('DEPLOY_SECRET', getenv('DEPLOY_SECRET') ?: null);
+
 // Timezone
 date_default_timezone_set('Europe/Lisbon');
 
@@ -32,9 +36,12 @@ ini_set('display_errors', '0');
 // Security Headers
 header('X-Content-Type-Options: nosniff');
 header('X-Frame-Options: SAMEORIGIN');
+// X-XSS-Protection is deprecated in modern browsers but kept for legacy support
 header('X-XSS-Protection: 1; mode=block');
 header('Referrer-Policy: strict-origin-when-cross-origin');
-header("Content-Security-Policy: default-src 'self' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://fonts.googleapis.com https://fonts.gstatic.com 'unsafe-inline';");
+// Content Security Policy: avoid 'unsafe-inline' where possible. If inline scripts/styles are required,
+// consider using nonces or hashes in a later iteration.
+header("Content-Security-Policy: default-src 'self' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://fonts.googleapis.com https://fonts.gstatic.com;");
 
 // Session Security Configuration
 if (session_status() === PHP_SESSION_NONE) {

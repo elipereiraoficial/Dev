@@ -125,8 +125,7 @@ media          → Property attachments
    - Access: `http://localhost/luxury-crm/`
 
 ### Default Credentials
-- **Email**: admin@luxury.pt
-- **Password**: admin123
+The application does not ship with hardcoded credentials. Create an admin user during setup or use the seeding scripts with an environment variable SEED_PASSWORD. See .env.example for details.
 
 ---
 

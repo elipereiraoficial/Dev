@@ -75,18 +75,18 @@ O deploy para Hostinger é AUTOMÁTICO via GitHub Actions após cada push.
 
 | Email | Name | Role | Password |
 |-------|------|------|----------|
-| admin@luxury.pt | Administrador | admin | admin123 |
-| maria.santos@luxury.pt | Maria Santos | vendas | 123456 |
-| pedro.costa@luxury.pt | Pedro Costa | vendas | 123456 |
-| sofia.ferreira@luxury.pt | Sofia Ferreira | gerente | 123456 |
-| joao.lima@luxury.pt | João Lima | vendas | 123456 |
-| ana.rodrigues@luxury.pt | Ana Rodrigues | vendas | 123456 |
-| miguel.santos@luxury.pt | Miguel Santos | suporte | 123456 |
-| laura.martins@luxury.pt | Laura Martins | gerente | 123456 |
-| tiago.almeida@luxury.pt | Tiago Almeida | vendas | 123456 |
-| carla.sousa@luxury.pt | Carla Sousa | vendas | 123456 |
-| ricardo.mendes@luxury.pt | Ricardo Mendes | vendas | 123456 |
-| patricia.silva@luxury.pt | Patrícia Silva | gerente | 123456 |
+| admin@luxury.pt | Administrador | admin | [REDACTED] |
+| maria.santos@luxury.pt | Maria Santos | vendas | [REDACTED] |
+| pedro.costa@luxury.pt | Pedro Costa | vendas | [REDACTED] |
+| sofia.ferreira@luxury.pt | Sofia Ferreira | gerente | [REDACTED] |
+| joao.lima@luxury.pt | João Lima | vendas | [REDACTED] |
+| ana.rodrigues@luxury.pt | Ana Rodrigues | vendas | [REDACTED] |
+| miguel.santos@luxury.pt | Miguel Santos | suporte | [REDACTED] |
+| laura.martins@luxury.pt | Laura Martins | gerente | [REDACTED] |
+| tiago.almeida@luxury.pt | Tiago Almeida | vendas | [REDACTED] |
+| carla.sousa@luxury.pt | Carla Sousa | vendas | [REDACTED] |
+| ricardo.mendes@luxury.pt | Ricardo Mendes | vendas | [REDACTED] |
+| patricia.silva@luxury.pt | Patrícia Silva | gerente | [REDACTED] |
 
 ---
 
@@ -410,9 +410,9 @@ luxury-crm/
 
 ```
 Host: localhost
-Database: u415107443_luxury_crm
-User: u415107443_luxury_user
-Pass: Cadu5540!!
+Database: luxury_crm
+User: your_db_user
+Pass: [REDACTED]
 ```
 
 ---

@@ -150,6 +150,6 @@ INSERT INTO deal_stages (name, stage_order, color, is_closed, is_won) VALUES
 ('Fechado Ganho', 7, '#10b981', 1, 1),
 ('Fechado Perdido', 8, '#ef4444', 1, 0);
 
--- Insert default admin user (password: admin123)
-INSERT INTO users (name, email, password, role) VALUES
-('Administrador', 'admin@luxury.pt', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin');
+-- Insert default admin user (run-time: please set a secure password during setup)
+-- Example: create user manually with a secure hashed password
+-- INSERT INTO users (name, email, password, role) VALUES ('Administrador', 'admin@luxury.pt', '<password_hash>', 'admin');

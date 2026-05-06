@@ -8,7 +8,10 @@ header('Content-Type: text/plain');
 
 echo "=== SEEDING TEST DATA ===\n\n";
 
-$password = password_hash('123456', PASSWORD_DEFAULT);
+// Determine seed password: use SEED_PASSWORD env var if provided, otherwise generate a random password.
+$seedPlain = getenv('SEED_PASSWORD') ?: bin2hex(random_bytes(4));
+$password = password_hash($seedPlain, PASSWORD_DEFAULT);
+echo "Using seed password: " . $seedPlain . "\n";
 
 try {
     echo "1. Users...\n";

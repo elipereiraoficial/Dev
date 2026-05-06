@@ -19,15 +19,35 @@ $filepath = $backup_dir . '/' . $filename;
 $output = [];
 $return_var = 0;
 
-$host = escapeshellarg(DB_HOST);
-$port = escapeshellarg(DB_PORT);
-$db = escapeshellarg(DB_NAME);
-$user = escapeshellarg(DB_USER);
-$pass = escapeshellarg(DB_PASS);
 
-$command = "mysqldump --host={$host} --port={$port} --user={$user} --password={$pass} {$db} > {$filepath}";
+// Use mysqldump safely. Avoid passing password on CLI. Create a temporary my.cnf with strict perms.
+$host = DB_HOST;
+$port = DB_PORT;
+$db = DB_NAME;
+$user = DB_USER;
+$pass = DB_PASS;
+
+// Check mysqldump exists
+exec('which mysqldump 2>/dev/null || where mysqldump 2>&1', $which_out, $which_ret);
+if ($which_ret !== 0) {
+    // Try running mysqldump directly - may still be available on Windows in PATH
+    $mysqldump = 'mysqldump';
+} else {
+    $mysqldump = trim(implode('\n', $which_out));
+}
+
+// Create temp credentials file to avoid exposing password in process list
+$tmpCnf = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'luxury_crm_my.cnf';
+$cnfContents = "[client]\nuser={$user}\npassword={$pass}\nhost={$host}\nport={$port}\n";
+file_put_contents($tmpCnf, $cnfContents);
+chmod($tmpCnf, 0600);
+
+$command = escapeshellcmd($mysqldump) . " --defaults-extra-file=" . escapeshellarg($tmpCnf) . " " . escapeshellarg($db) . " > " . escapeshellarg($filepath) . " 2>&1";
 
 exec($command, $output, $return_var);
+
+// Remove temp credentials file
+@unlink($tmpCnf);
 
 if ($return_var === 0 && file_exists($filepath)) {
     // Compress backup

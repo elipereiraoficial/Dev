@@ -108,7 +108,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </form>
 
             <div class="mt-6 pt-6 border-t border-white/10 text-center">
-                <p class="text-slate-500 text-xs">Credenciais padrão: admin@luxury.pt / admin123</p>
+                <p class="text-slate-500 text-xs">Credenciais padrão: admin@luxury.pt / [REDACTED]. See .env.example for setup.</p>
             </div>
         </div>
 

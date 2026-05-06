@@ -5,7 +5,10 @@
 
 header('Content-Type: application/json');
 header('Cache-Control: no-store');
-header('Access-Control-Allow-Origin: *');
+// In production, restrict CORS. Allow all for local development only when BASE_URL is localhost.
+if (strpos(BASE_URL, 'localhost') !== false || strpos(BASE_URL, '127.0.0.1') !== false) {
+    header('Access-Control-Allow-Origin: *');
+}
 header('Access-Control-Allow-Methods: POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
 
@@ -38,16 +41,22 @@ if (!isset($_FILES['image']) || $_FILES['image']['error'] !== UPLOAD_ERR_OK) {
 }
 
 $file = $_FILES['image'];
-$allowed_types = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-$max_size = 5 * 1024 * 1024; // 5MB
 
-if (!in_array($file['type'], $allowed_types)) {
-    echo json_encode(['success' => false, 'error' => 'Tipo de ficheiro não permitido. Use JPEG, PNG, GIF ou WebP']);
+// Validate size
+$max_size = defined('MAX_UPLOAD_SIZE') ? MAX_UPLOAD_SIZE : (5 * 1024 * 1024);
+if ($file['size'] > $max_size) {
+    echo json_encode(['success' => false, 'error' => 'Ficheiro muito grande. Máximo ' . ($max_size/1024/1024) . 'MB']);
     exit;
 }
 
-if ($file['size'] > $max_size) {
-    echo json_encode(['success' => false, 'error' => 'Ficheiro muito grande. Máximo 5MB']);
+// Validate MIME type using finfo to avoid spoofing
+$finfo = finfo_open(FILEINFO_MIME_TYPE);
+$mime = finfo_file($finfo, $file['tmp_name']);
+finfo_close($finfo);
+
+$allowed_types = ['image/jpeg' => 'jpg', 'image/png' => 'png', 'image/gif' => 'gif', 'image/webp' => 'webp'];
+if (!in_array($mime, array_keys($allowed_types))) {
+    echo json_encode(['success' => false, 'error' => 'Tipo de ficheiro não permitido. Use JPEG, PNG, GIF ou WebP']);
     exit;
 }
 
@@ -56,8 +65,10 @@ if (!is_dir($upload_dir)) {
     mkdir($upload_dir, 0755, true);
 }
 
-$extension = pathinfo($file['name'], PATHINFO_EXTENSION);
-$filename = uniqid('prop_') . '_' . time() . '.' . strtolower($extension);
+// Use allowed extension from MIME to avoid user controlled extensions
+$extension = $allowed_types[$mime];
+$filename = uniqid('prop_') . '_' . time() . '.' . $extension;
+$filename = preg_replace('/[^a-zA-Z0-9_\.-]/', '', $filename);
 $target_path = $upload_dir . $filename;
 
 if (move_uploaded_file($file['tmp_name'], $target_path)) {
@@ -68,7 +79,7 @@ if (move_uploaded_file($file['tmp_name'], $target_path)) {
         $file['name'],
         'uploads/properties/' . $filename,
         $file['size'],
-        $file['type']
+        $mime
     ]);
     
     $image_id = $pdo->lastInsertId();
