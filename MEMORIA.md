@@ -379,7 +379,7 @@ luxury-crm/
 
 ## 📅 Last Update
 
-**05/05/2026** - Sistema Completo ✅
+**06/05/2026** - Imóveis e Imagens Funcionando ✅
 - kanban.php: Fixed page title to "Pipeline Kanban", includes sidebar
 - index.php: Dashboard shows all 8 stages, wonDeals KPI shows total
 - deals.php: Added filter support (won/lost/open)
