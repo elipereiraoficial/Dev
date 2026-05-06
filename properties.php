@@ -314,4 +314,49 @@ include 'includes/sidebar.php';
 </div>
 <?php endif; ?>
 
+<script>
+const propertyId = <?php echo $editProp['id'] ?? 0; ?>;
+const csrfToken = document.getElementById('global-csrf-token')?.value || '';
+
+document.getElementById('property-image-input')?.addEventListener('change', async function(e) {
+    const file = e.target.files[0];
+    if (!file || !propertyId) return;
+    
+    const formData = new FormData();
+    formData.append('image', file);
+    formData.append('property_id', propertyId);
+    
+    try {
+        const response = await fetch('api/upload_property_image.php', { method: 'POST', body: formData });
+        const data = await response.json();
+        if (data.success) { location.reload(); } 
+        else { alert(data.error || 'Erro ao carregar'); }
+    } catch (err) { alert('Erro ao carregar imagem'); }
+    this.value = '';
+});
+
+async function deleteImage(imageId) {
+    if (!confirm('Eliminar imagem?')) return;
+    try {
+        const formData = new FormData();
+        formData.append('action', 'delete_image');
+        formData.append('image_id', imageId);
+        formData.append('csrf_token', csrfToken);
+        await fetch('properties.php', { method: 'POST', body: formData });
+        location.reload();
+    } catch (err) { alert('Erro ao eliminar'); }
+}
+
+async function setPrimaryImage(imageId) {
+    try {
+        const formData = new FormData();
+        formData.append('action', 'set_primary_image');
+        formData.append('image_id', imageId);
+        formData.append('csrf_token', csrfToken);
+        await fetch('properties.php', { method: 'POST', body: formData });
+        location.reload();
+    } catch (err) { alert('Erro ao definir principal'); }
+}
+</script>
+
 <?php include 'includes/footer.php'; ?>
